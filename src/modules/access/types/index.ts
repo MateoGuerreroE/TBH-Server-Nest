@@ -1,4 +1,4 @@
-import { IsString } from 'class-validator';
+import { IsEmail, IsOptional, IsString } from 'class-validator';
 
 export interface UserLogin {
   emailAddress: string;
@@ -22,4 +22,19 @@ export interface AdminLogin {
 export class LoginUserDTO {
   @IsString()
   token: string;
+}
+
+export class CreateUserDTO {
+  @IsString()
+  firstName: string;
+
+  @IsString()
+  lastName: string;
+
+  @IsEmail()
+  emailAddress: string;
+
+  @IsString()
+  @IsOptional()
+  firebaseId?: string;
 }

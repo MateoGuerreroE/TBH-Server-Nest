@@ -47,7 +47,7 @@ export async function validatePayload<T extends object>(
 
   if (errors.length > 0) {
     const formatted = errors.map(
-      (e) => `Expected ${e.constraints} for field ${e.property}`,
+      (e) => `${Object.values(e.constraints).join('')}`,
     );
 
     throw new ControllerError('Validation failed', `${formatted.join(', ')}`);

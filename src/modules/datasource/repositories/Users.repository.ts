@@ -35,10 +35,11 @@ export class UserRepository {
   }
 
   async createUser(userToCreate: CreateUserData): Promise<UserRecord> {
-    return this.client
+    const result = await this.client
       .insert(schema.userTable)
       .values(userToCreate)
-      .returning()[0];
+      .returning();
+    return result[0];
   }
 
   async updateUser(userToUpdate: UpdateUserData): Promise<string | null> {

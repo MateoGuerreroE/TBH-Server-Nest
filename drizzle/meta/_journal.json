@@ -8,6 +8,20 @@
       "when": 1748221708231,
       "tag": "0000_luxuriant_warbound",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1748300772827,
+      "tag": "0001_dark_masked_marvel",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1748301133335,
+      "tag": "0002_regular_meltdown",
+      "breakpoints": true
     }
   ]
 }

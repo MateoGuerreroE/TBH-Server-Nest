@@ -32,7 +32,10 @@ export class UserService {
           'Email already exists',
         );
       }
-      // LOG HERE;
+
+      this.logger.debug(
+        `User existed as visitor, updating firebaseId: ${firebaseId}`,
+      );
       const result = await this.userRepository.updateUser({
         userId: existentUser.userId,
         firebaseId,
