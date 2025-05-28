@@ -20,6 +20,20 @@ export class UserService {
     private readonly logger: LoggingService,
   ) {}
 
+  async getUserById(userId: string): Promise<UserRecord | null> {
+    this.logger.debug(`Fetching user with ID: ${userId}`);
+    return this.userRepository.getUserById(userId);
+  }
+
+  async updateUser(userData: Partial<UserRecord> & { userId: string }) {
+    this.logger.debug(`Updating user with ID: ${userData.userId}`);
+    const user = await this.userRepository.updateUser(userData);
+    if (!user) {
+      throw new BusinessError('User not found', 'Unable to update user');
+    }
+    return this.userRepository.updateUser(userData);
+  }
+
   async createUser(userToCreate: CreateUserData) {
     const { emailAddress, firebaseId } = userToCreate;
     const existentUser =
@@ -60,7 +74,7 @@ export class UserService {
 
       const userRecord =
         await this.userRepository.getUserByEmailAddress(userEmail);
-      if (userRecord) {
+      if (!userRecord) {
         throw new BusinessError('Unable to login', 'User record not found');
       }
 

@@ -16,5 +16,6 @@ import { ConfigModule } from '../config';
   ],
   controllers: [UserController],
   providers: [UserService, JwtService, FirebaseService, NestJwtService],
+  exports: [UserService],
 })
 export class AccessModule {}

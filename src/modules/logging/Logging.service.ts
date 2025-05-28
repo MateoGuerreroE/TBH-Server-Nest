@@ -9,23 +9,23 @@ export class LoggingService {
     this.logger = new Logger(context);
   }
 
-  log(message: string, context?: string) {
-    this.logger.log(message, context);
+  log(message: string) {
+    this.logger.log(message);
   }
 
-  error(message: string, trace?: string, context?: string) {
-    this.logger.error(message, trace, context);
+  error(message: string) {
+    this.logger.error(message);
   }
 
-  warn(message: string, context?: string) {
-    this.logger.warn(message, context);
+  warn(message: string) {
+    this.logger.warn(message);
   }
 
-  debug(message: string, context?: string) {
-    this.logger.debug?.(message, context);
+  debug(message: string) {
+    this.logger.debug?.(message);
   }
 
-  verbose(message: string, context?: string) {
-    this.logger.verbose?.(message, context);
+  verbose(message: string) {
+    this.logger.verbose?.(message);
   }
 }

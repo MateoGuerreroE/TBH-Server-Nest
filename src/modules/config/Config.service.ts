@@ -27,4 +27,10 @@ export class ConfigService {
     if (!secret) throw new DataError('No JWT Secret found');
     return secret;
   }
+
+  getMLAccessKey(): string {
+    const accessKey = this.get<string>('ML_ACCESS_TOKEN');
+    if (!accessKey) throw new DataError('No Mercado Libre access key found');
+    return accessKey;
+  }
 }

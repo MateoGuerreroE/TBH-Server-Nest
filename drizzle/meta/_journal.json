@@ -22,6 +22,34 @@
       "when": 1748301133335,
       "tag": "0002_regular_meltdown",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1748304497297,
+      "tag": "0003_living_sentinel",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1748362930124,
+      "tag": "0004_numerous_supernaut",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1748363363302,
+      "tag": "0005_charming_karen_page",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1748368616426,
+      "tag": "0006_curious_nightcrawler",
+      "breakpoints": true
     }
   ]
 }

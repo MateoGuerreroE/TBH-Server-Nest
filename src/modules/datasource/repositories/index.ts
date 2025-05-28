@@ -1,2 +1,6 @@
 export * from './Users.repository';
 export * from './Product.repository';
+export * from './Order.repository';
+export * from './Coupon.repository';
+export * from './Payment.repository';
+export * from './Coupon.repository';

@@ -1,6 +1,7 @@
-import { LoggerService } from '@nestjs/common';
+import { BadRequestException } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
-import { validate } from 'class-validator';
+import { validate, ValidationError } from 'class-validator';
+import { LoggingService } from 'src/modules/logging';
 import { ControllerError, CustomError } from 'src/types';
 
 interface SResponse<T> {
@@ -26,31 +27,46 @@ export type ControllerResponse<T> = SResponse<T> | FResponse;
 
 export function handleControllerError(
   e: unknown,
-  logger: LoggerService,
+  logger: LoggingService,
 ): FResponse {
   if (e instanceof CustomError) {
-    logger.debug(e.cause);
-    return FailedResponse.send(e.message);
+    logger.debug(e.message);
+    throw new BadRequestException({ message: e.message });
   }
-  return FailedResponse.send((e as Error).message ?? 'Unknown error');
+  throw new BadRequestException({
+    message: (e as Error).message ?? 'An unexpected error occurred',
+  });
 }
 
 export async function validatePayload<T extends object>(
   dtoClass: new () => T,
   payload: unknown,
+  allowUnknownProperties = false,
 ): Promise<T> {
   const instance = plainToInstance(dtoClass, payload);
   const errors = await validate(instance, {
-    whitelist: true,
-    forbidNonWhitelisted: true,
+    whitelist: !allowUnknownProperties,
+    forbidNonWhitelisted: !allowUnknownProperties,
   });
 
   if (errors.length > 0) {
-    const formatted = errors.map(
-      (e) => `${Object.values(e.constraints).join('')}`,
-    );
+    const formattedErrors: string[] = [];
+    if (errors[0].children instanceof ValidationError) {
+      const errorList = errors[0].children[0].children.map(
+        (child) => `${Object.values(child.constraints).join('')}`,
+      );
+      formattedErrors.push(...errorList);
+    } else {
+      const errorList = errors.map(
+        (e) => `${Object.values(e.constraints).join('')}`,
+      );
+      formattedErrors.push(...errorList);
+    }
 
-    throw new ControllerError('Validation failed', `${formatted.join(', ')}`);
+    throw new ControllerError(
+      'Validation failed',
+      `${formattedErrors.join(', ')}`,
+    );
   }
   return instance;
 }

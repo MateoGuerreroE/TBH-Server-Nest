@@ -36,6 +36,7 @@ export type AdminRecord = {
 };
 
 export interface CreateUserData {
+  userId?: string;
   firstName: string;
   lastName: string;
   emailAddress: string;
