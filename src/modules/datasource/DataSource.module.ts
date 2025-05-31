@@ -5,6 +5,7 @@ import {
   OrderRepository,
   UserRepository,
   PaymentRepository,
+  AddressRepository,
 } from './repositories';
 import { DataSourceClient } from './DataSourceClient';
 
@@ -12,12 +13,14 @@ import { DataSourceClient } from './DataSourceClient';
   imports: [ConfigModule],
   providers: [
     UserRepository,
+    AddressRepository,
     DataSourceClient,
     PaymentRepository,
     OrderRepository,
     CouponRepository,
   ],
   exports: [
+    AddressRepository,
     UserRepository,
     PaymentRepository,
     OrderRepository,

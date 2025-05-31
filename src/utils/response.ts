@@ -51,7 +51,7 @@ export async function validatePayload<T extends object>(
 
   if (errors.length > 0) {
     const formattedErrors: string[] = [];
-    if (errors[0].children instanceof ValidationError) {
+    if (errors[0].children[0] instanceof ValidationError) {
       const errorList = errors[0].children[0].children.map(
         (child) => `${Object.values(child.constraints).join('')}`,
       );

@@ -4,3 +4,4 @@ export * from './Order.repository';
 export * from './Coupon.repository';
 export * from './Payment.repository';
 export * from './Coupon.repository';
+export * from './Address.repository';

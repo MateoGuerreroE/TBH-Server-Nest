@@ -78,6 +78,7 @@ export const productTable = pgTable('products', {
   createdAt: timestamp({ mode: 'date' }).notNull().defaultNow(),
   updatedAt: timestamp({ mode: 'date' }).notNull().defaultNow(),
   deletedAt: timestamp({ mode: 'date' }).default(null),
+  discount: numeric({ precision: 5, scale: 2 }).default('0'),
 
   subCategoryId: uuid('subCategoryId')
     .references(() => subcategoryTable.subCategoryId, { onDelete: 'cascade' })
@@ -241,6 +242,9 @@ export const addressTable = pgTable('addresses', {
   mainAddress: text().notNull(),
   notes: text().default(null),
   city: varchar({ length: 100 }).notNull(),
+  createdAt: timestamp({ mode: 'date' }).notNull().defaultNow(),
+  updatedAt: timestamp({ mode: 'date' }).notNull().defaultNow(),
+  deletedAt: timestamp({ mode: 'date' }).default(null),
 });
 
 export const addressRelations = relations(addressTable, ({ one, many }) => ({

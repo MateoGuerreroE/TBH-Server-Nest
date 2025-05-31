@@ -14,27 +14,11 @@ import {
 import { ExternalPaymentData, ExternalPaymentResponse } from './payment';
 import { Exclude, Type } from 'class-transformer';
 import {
+  CreateCouponData,
   CreateOrderData,
   CreateOrderItemData,
   UpdateOrderData,
 } from 'src/modules/datasource';
-
-export class CreatePaymentDTO {
-  @IsUUID()
-  orderId: string;
-
-  @IsNumber()
-  paymentAmount: number;
-
-  @IsString()
-  externalPaymentId: string;
-
-  @IsString()
-  status: string;
-
-  @IsObject()
-  externalResponse: ExternalPaymentResponse;
-}
 
 export class UpdatePaymentDTO {
   @IsUUID()
@@ -85,6 +69,10 @@ export class ProcessPaymentDTO {
   @ValidateNested()
   @Type(() => ShippingDTO)
   shipping: ShippingDTO;
+
+  @IsUUID()
+  @IsOptional()
+  addressId?: string;
 }
 
 export class CreateOrderDTO {
@@ -156,6 +144,10 @@ export class UpdateOrderDTO {
 
   @IsUUID()
   @IsOptional()
+  userId?: string;
+
+  @IsUUID()
+  @IsOptional()
   paymentId?: string | null;
 
   @IsUUID()
@@ -166,11 +158,32 @@ export class UpdateOrderDTO {
   getOrder(): UpdateOrderData {
     return {
       orderProductTotal: this.orderProductTotal?.toString(),
+      userId: this.userId,
       couponId: this.couponId,
       taxes: this.taxes?.toString(),
       orderId: this.orderId,
       addressId: this.addressId,
       paymentId: this.paymentId,
+    };
+  }
+}
+
+export class CreateCouponDTO {
+  @IsString()
+  couponCode: string;
+
+  @IsNumber()
+  discountAmount: number;
+
+  @IsDateString()
+  expiresAt: string;
+
+  @Exclude()
+  getCoupon(): CreateCouponData {
+    return {
+      couponCode: this.couponCode,
+      discountAmount: this.discountAmount.toString(),
+      expiresAt: new Date(this.expiresAt),
     };
   }
 }

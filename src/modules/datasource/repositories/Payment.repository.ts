@@ -31,6 +31,8 @@ export class PaymentRepository {
       with: {
         order: {
           with: {
+            user: true,
+            address: true,
             items: {
               with: {
                 product: true,

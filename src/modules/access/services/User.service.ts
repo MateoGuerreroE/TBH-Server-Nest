@@ -25,6 +25,17 @@ export class UserService {
     return this.userRepository.getUserById(userId);
   }
 
+  async getUserByEmailAddress(
+    emailAddress: string,
+  ): Promise<Result<UserRecord, string>> {
+    this.logger.debug(`Fetching user with email: ${emailAddress}`);
+    const user = await this.userRepository.getUserByEmailAddress(emailAddress);
+    if (!user) {
+      return err('User not found');
+    }
+    return ok(user);
+  }
+
   async updateUser(userData: Partial<UserRecord> & { userId: string }) {
     this.logger.debug(`Updating user with ID: ${userData.userId}`);
     const user = await this.userRepository.updateUser(userData);

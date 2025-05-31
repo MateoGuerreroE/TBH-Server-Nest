@@ -44,6 +44,7 @@ export interface CreateOrderData {
 
 export interface UpdateOrderData {
   orderId: string;
+  userId?: string;
   addressId?: string;
   orderProductTotal?: string;
   taxes?: string;

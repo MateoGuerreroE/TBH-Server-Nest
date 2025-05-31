@@ -50,6 +50,20 @@
       "when": 1748368616426,
       "tag": "0006_curious_nightcrawler",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1748480135878,
+      "tag": "0007_omniscient_exodus",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1748553580985,
+      "tag": "0008_brief_edwin_jarvis",
+      "breakpoints": true
     }
   ]
 }

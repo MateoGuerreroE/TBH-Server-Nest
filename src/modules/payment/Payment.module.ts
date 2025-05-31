@@ -10,6 +10,8 @@ import {
   OrderManagementService,
   PaymentService,
 } from './services';
+import { CouponController } from './controller/Coupon.controller';
+import { CouponService } from './services/Coupon.service';
 
 @Module({
   imports: [
@@ -18,8 +20,13 @@ import {
     AccessModule,
     ConfigModule,
   ],
-  controllers: [PaymentController, OrderController],
-  providers: [PaymentService, OrderManagementService, MercadoLibreService],
+  controllers: [PaymentController, OrderController, CouponController],
+  providers: [
+    PaymentService,
+    OrderManagementService,
+    MercadoLibreService,
+    CouponService,
+  ],
   exports: [],
 })
 export class PaymentModule {}
