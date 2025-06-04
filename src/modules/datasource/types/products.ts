@@ -1,18 +1,44 @@
+export type ProductDescription = {
+  short: string;
+  content: string;
+};
+
+export type ImageType = 'color' | 'sizing';
+export type VideoType = 'main' | 'demo' | 'setup' | 'use';
+
+export type ProductImage = {
+  url: string;
+  isPrimary: boolean;
+  altText?: string;
+  type: ImageType;
+  color: string;
+};
+
+export type ProductVideo = {
+  url: string;
+  videoType: VideoType;
+};
+
 export interface ProductRecord {
   productId: string;
-  productCup: string;
   productName: string;
-  productDescription: string;
+  productTags: string[];
   productPrice: string;
-  productEan: string | null;
-  productImages: string[];
-  productVideos: string[];
-  isEnabled: boolean;
+  discount: string;
+  stock: number;
+  externalId: string;
+  productImages: ProductImage[];
+  productDescription: ProductDescription;
+  productVideos: ProductVideo[];
   isActive: boolean;
   createdAt: Date;
   updatedAt: Date;
   deletedAt: Date | null;
+  createdBy: string;
+  updatedBy: string;
+  deletedBy: string | null;
   subCategoryId: string;
+  subCategory?: SubcategoryRecord | null;
 }
 
 export interface CategoryRecord {
@@ -49,3 +75,50 @@ export interface SubCategoryWithProducts extends SubcategoryRecord {
 export interface CategoryWithSubCategoriesAndProducts extends CategoryRecord {
   subCategories: SubCategoryWithProducts[];
 }
+
+export interface ProductWithSubCategoryAndCategory extends ProductRecord {
+  subCategory: SubcategoryRecord & {
+    category: CategoryRecord;
+  };
+}
+
+// Mutation types
+export interface CreateProductData {
+  productName: string;
+  productPrice: string;
+  discount: string;
+  stock: number;
+  productTags: string[];
+  externalId: string;
+  createdBy: string;
+  updatedBy: string;
+  subCategoryId: string;
+}
+
+export interface UpdateProductAttributeData {
+  productName?: string;
+  productPrice?: string;
+  discount?: string;
+  sock?: number;
+  isActive?: boolean;
+  subCategoryId?: string;
+}
+
+export interface UpdateProductObjectData {
+  productImages?: ProductImage[];
+  productVideos?: ProductVideo[];
+  productDescription?: ProductDescription;
+}
+
+export interface CategoryFilters {
+  categoryId?: string;
+  subCategoryId?: string;
+}
+
+export interface ProductPublicFilters {
+  keyword?: string;
+  minPrice?: number;
+  maxPrice?: number;
+}
+
+export type ProductFilters = ProductPublicFilters & CategoryFilters;

@@ -7,8 +7,11 @@ import {
   text,
   numeric,
   jsonb,
+  json,
+  integer,
 } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
+import { ImageType, VideoType } from '../types';
 
 // Access
 export const userTable = pgTable('users', {
@@ -66,19 +69,42 @@ export const userRelations = relations(userTable, ({ one, many }) => ({
 // Product
 export const productTable = pgTable('products', {
   productId: uuid().primaryKey().defaultRandom(),
-  productCup: varchar({ length: 100 }).notNull().unique(),
   productName: varchar({ length: 255 }).notNull(),
-  productDescription: text().notNull(),
   productPrice: numeric({ precision: 10, scale: 2 }).notNull(),
-  productEan: varchar({ length: 20 }).default(null),
-  productImages: text().array().default([]),
-  productVideos: text().array().default([]),
-  isEnabled: boolean().notNull().default(true),
+  productTags: text().array().default([]),
+  discount: numeric({ precision: 5, scale: 2 }).default('0'),
+  stock: integer().notNull().default(0),
+  externalId: varchar({ length: 100 }).notNull().unique(),
+  productImages: json()
+    .$type<
+      Array<{
+        url: string;
+        isPrimary: boolean;
+        altText?: string;
+        type: ImageType;
+        color: string;
+      }>
+    >()
+    .default([]),
+  productDescription: json().$type<{
+    short: string;
+    content: string;
+  }>(),
+  productVideos: json()
+    .$type<
+      Array<{
+        url: string;
+        videoType: VideoType;
+      }>
+    >()
+    .default([]),
   isActive: boolean().notNull().default(true),
   createdAt: timestamp({ mode: 'date' }).notNull().defaultNow(),
   updatedAt: timestamp({ mode: 'date' }).notNull().defaultNow(),
   deletedAt: timestamp({ mode: 'date' }).default(null),
-  discount: numeric({ precision: 5, scale: 2 }).default('0'),
+  createdBy: uuid().notNull(),
+  updatedBy: uuid().notNull(),
+  deletedBy: uuid().default(null),
 
   subCategoryId: uuid('subCategoryId')
     .references(() => subcategoryTable.subCategoryId, { onDelete: 'cascade' })

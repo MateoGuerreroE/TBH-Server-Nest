@@ -6,12 +6,14 @@ import {
   UserRepository,
   PaymentRepository,
   AddressRepository,
+  ProductRepository,
 } from './repositories';
 import { DataSourceClient } from './DataSourceClient';
 
 @Module({
   imports: [ConfigModule],
   providers: [
+    ProductRepository,
     UserRepository,
     AddressRepository,
     DataSourceClient,
@@ -20,6 +22,7 @@ import { DataSourceClient } from './DataSourceClient';
     CouponRepository,
   ],
   exports: [
+    ProductRepository,
     AddressRepository,
     UserRepository,
     PaymentRepository,

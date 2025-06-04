@@ -5,64 +5,22 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1748221708231,
-      "tag": "0000_luxuriant_warbound",
+      "when": 1748988322216,
+      "tag": "0000_uneven_baron_strucker",
       "breakpoints": true
     },
     {
       "idx": 1,
       "version": "7",
-      "when": 1748300772827,
-      "tag": "0001_dark_masked_marvel",
+      "when": 1748990765653,
+      "tag": "0001_boring_nick_fury",
       "breakpoints": true
     },
     {
       "idx": 2,
       "version": "7",
-      "when": 1748301133335,
-      "tag": "0002_regular_meltdown",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1748304497297,
-      "tag": "0003_living_sentinel",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1748362930124,
-      "tag": "0004_numerous_supernaut",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "7",
-      "when": 1748363363302,
-      "tag": "0005_charming_karen_page",
-      "breakpoints": true
-    },
-    {
-      "idx": 6,
-      "version": "7",
-      "when": 1748368616426,
-      "tag": "0006_curious_nightcrawler",
-      "breakpoints": true
-    },
-    {
-      "idx": 7,
-      "version": "7",
-      "when": 1748480135878,
-      "tag": "0007_omniscient_exodus",
-      "breakpoints": true
-    },
-    {
-      "idx": 8,
-      "version": "7",
-      "when": 1748553580985,
-      "tag": "0008_brief_edwin_jarvis",
+      "when": 1748998711595,
+      "tag": "0002_aspiring_jack_murdock",
       "breakpoints": true
     }
   ]
