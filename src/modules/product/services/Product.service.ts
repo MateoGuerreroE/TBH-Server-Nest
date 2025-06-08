@@ -8,7 +8,7 @@ import {
 } from 'src/modules/datasource/types/products';
 import { LoggingService } from 'src/modules/logging';
 import { BusinessError } from 'src/types';
-import { CreateProductDTO } from '../types';
+import { CreateProductDTO, UpdateProductObjDTO } from '../types';
 import { filterProductResult } from '../utils/utils';
 
 @Injectable()
@@ -100,5 +100,32 @@ export class ProductService {
     );
 
     return this.productRepository.createProductRecord(productToCreate);
+  }
+
+  async updateProductObjects(
+    productId: string,
+    objectsToUpdate: UpdateProductObjDTO,
+  ) {
+    if (Object.keys(objectsToUpdate).length === 0) {
+      this.logger.warn(`No objects to update for product ID: ${productId}`);
+      throw new BusinessError(
+        `No objects to update`,
+        `No objects provided for update in product with ID ${productId}`,
+      );
+    }
+    const updates = await this.productRepository.updateProductObjects(
+      productId,
+      objectsToUpdate,
+    );
+
+    if (!updates) {
+      this.logger.warn(`No updates made for product ID: ${productId}`);
+      throw new BusinessError(
+        `Unable to update product objects`,
+        `Product with ID ${productId} does not exist or no changes were made`,
+      );
+    }
+
+    return true;
   }
 }
