@@ -10,7 +10,12 @@ import {
   IsUUID,
   ValidateNested,
 } from 'class-validator';
-import { CategoryToUpdate, ImageType, VideoType } from 'src/modules/datasource';
+import {
+  CategoryToUpdate,
+  ImageType,
+  UpdateProductAttributeData,
+  VideoType,
+} from 'src/modules/datasource';
 
 export class CreateProductDTO {
   @IsUUID()
@@ -43,6 +48,15 @@ export class CreateProductDTO {
   productTags?: string[];
 }
 
+export class UpdateProductBatchDTO {
+  @IsArray()
+  @ArrayMinSize(1)
+  productsToUpdate: UpdateProductDTO[];
+
+  @IsUUID()
+  updatedBy: string;
+}
+
 export class UpdateProductDTO {
   @IsUUID()
   productId: string;
@@ -50,6 +64,31 @@ export class UpdateProductDTO {
   @IsOptional()
   @IsString()
   productName?: string;
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  productTags?: string[];
+
+  @IsOptional()
+  @IsNumber({ maxDecimalPlaces: 2 })
+  productPrice?: number;
+
+  @IsOptional()
+  @IsNumber({ maxDecimalPlaces: 2 })
+  discount?: number;
+
+  @IsOptional()
+  @IsNumber()
+  stock?: number;
+
+  @IsOptional()
+  @IsBoolean()
+  isActive?: boolean;
+
+  @IsOptional()
+  @IsUUID()
+  subCategoryId?: string;
 }
 
 export class ProductImageDTO {

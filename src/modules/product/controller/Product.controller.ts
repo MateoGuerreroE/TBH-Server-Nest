@@ -8,7 +8,11 @@ import {
 } from 'src/utils/response';
 import { ProductService } from '../services';
 import { LoggingService } from 'src/modules/logging';
-import { CreateProductDTO, UpdateProductObjDTO } from '../types';
+import {
+  CreateProductDTO,
+  UpdateProductBatchDTO,
+  UpdateProductObjDTO,
+} from '../types';
 
 @Controller('product')
 export class ProductController {
@@ -54,6 +58,26 @@ export class ProductController {
     try {
       const payload = await validatePayload(CreateProductDTO, product);
       const result = await this.productService.createProduct(payload);
+      return SuccessResponse.send(result);
+    } catch (e) {
+      return handleControllerError(e, this.logger);
+    }
+  }
+
+  @Post('updateBatch')
+  async updateProductBatch(
+    @Body() productBatchUpdate,
+  ): Promise<ControllerResponse<boolean>> {
+    try {
+      const payload = await validatePayload(
+        UpdateProductBatchDTO,
+        productBatchUpdate,
+      );
+      const result = await this.productService.updateProductBatch(
+        payload.productsToUpdate,
+        payload.updatedBy,
+      );
+
       return SuccessResponse.send(result);
     } catch (e) {
       return handleControllerError(e, this.logger);

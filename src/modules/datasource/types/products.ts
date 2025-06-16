@@ -107,10 +107,12 @@ export interface CreateProductData {
 }
 
 export interface UpdateProductAttributeData {
+  productId: string;
   productName?: string;
-  productPrice?: string;
-  discount?: string;
-  sock?: number;
+  productPrice?: number;
+  discount?: number;
+  stock?: number;
+  productTags?: string[];
   isActive?: boolean;
   subCategoryId?: string;
 }

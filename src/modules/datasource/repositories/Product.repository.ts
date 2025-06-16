@@ -11,7 +11,9 @@ import {
   UpdateProductAttributeData,
   UpdateProductObjectData,
 } from '../types/products';
-import { eq, sql } from 'drizzle-orm';
+import { eq, inArray, sql } from 'drizzle-orm';
+import { generateBatchSQL } from '../utils/utils';
+import { PgDialect } from 'drizzle-orm/pg-core';
 
 @Injectable()
 export class ProductRepository {
@@ -117,17 +119,34 @@ export class ProductRepository {
     });
   }
 
-  async updateProductAttributes(
-    productId: string,
-    attributes: UpdateProductAttributeData,
-  ): Promise<ProductRecord | null> {
-    const updatedProduct = await this.client
-      .update(schema.productTable)
-      .set({ ...attributes, updatedAt: new Date() })
-      .where(eq(schema.productTable.productId, productId))
-      .returning();
+  async updateBatchProducts(
+    products: UpdateProductAttributeData[],
+    updatedBy: string,
+  ): Promise<boolean> {
+    const batchSQL = generateBatchSQL<UpdateProductAttributeData>(
+      'products',
+      'productId',
+      products,
+      updatedBy,
+    );
 
-    return updatedProduct[0] || null;
+    const test = new PgDialect();
+    const printable = test.sqlToQuery(batchSQL);
+    console.log(printable.sql, printable.params);
+
+    const updates = await this.client.execute(batchSQL);
+    return !!updates.rowCount;
+  }
+
+  async verifyProductsExist(productIds: string[]): Promise<number> {
+    const countResult = await this.client
+      .select({
+        count: sql<number>`count(*)`,
+      })
+      .from(schema.productTable)
+      .where(inArray(schema.productTable.productId, productIds));
+
+    return Number(countResult[0]?.count ?? 0);
   }
 
   async updateProductObjects(

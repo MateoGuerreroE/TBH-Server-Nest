@@ -8,7 +8,11 @@ import {
 } from 'src/modules/datasource/types/products';
 import { LoggingService } from 'src/modules/logging';
 import { BusinessError } from 'src/types';
-import { CreateProductDTO, UpdateProductObjDTO } from '../types';
+import {
+  CreateProductDTO,
+  UpdateProductDTO,
+  UpdateProductObjDTO,
+} from '../types';
 import { filterProductResult } from '../utils/utils';
 
 @Injectable()
@@ -100,6 +104,34 @@ export class ProductService {
     );
 
     return this.productRepository.createProductRecord(productToCreate);
+  }
+
+  async updateProductBatch(
+    updatedProducts: UpdateProductDTO[],
+    updatedBy: string,
+  ): Promise<boolean> {
+    const productIds = updatedProducts.map((p) => p.productId);
+    this.logger.debug(`Verifying existence of products to update`);
+    const existingProducts =
+      await this.productRepository.verifyProductsExist(productIds);
+
+    if (existingProducts !== updatedProducts.length) {
+      this.logger.warn(
+        `Not all products exist for update. Expected: ${updatedProducts.length}, Found: ${existingProducts}`,
+      );
+      throw new BusinessError(
+        `Unable to update products`,
+        `Some products do not exist or have no changes to apply`,
+      );
+    }
+
+    this.logger.debug(`Updating products in batch`);
+    const updates = await this.productRepository.updateBatchProducts(
+      updatedProducts,
+      updatedBy,
+    );
+
+    return updates;
   }
 
   async updateProductObjects(

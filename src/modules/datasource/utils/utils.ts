@@ -21,7 +21,7 @@ export function generateBatchSQL<T extends object>(
       .filter((update) => field in update)
       .map(
         (update) =>
-          sql`WHEN ${sql.param(update[idKey])} THEN ${sql.param(update[field as keyof T])}`,
+          sql`WHEN ${sql.param(update[idKey])} THEN ${typeof update[field] === 'number' ? sql.raw(`${update[field]}`) : sql.param(update[field as keyof T])} ELSE ${sql.raw(`"${field}"`)}`,
       );
 
     fieldCases[field] =
