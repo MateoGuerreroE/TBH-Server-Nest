@@ -19,15 +19,13 @@ export function generateBatchSQL<T extends object>(
   for (const field of allFields) {
     const cases = updates
       .filter((update) => field in update)
-      .map((update) =>
-        sql.raw(
-          `WHEN ${sql.param(update[idKey])} THEN ${sql.param(update[field as keyof T])}`,
-        ),
+      .map(
+        (update) =>
+          sql`WHEN ${sql.param(update[idKey])} THEN ${sql.param(update[field as keyof T])}`,
       );
 
-    fieldCases[field] = sql.raw(
-      `CASE "${String(idKey)}" ${sql.join(cases, sql.raw(' '))} END`,
-    );
+    fieldCases[field] =
+      sql`CASE "${sql.raw(String(idKey))}" ${sql.join(cases, sql.raw(' '))} END`;
   }
 
   const setClauses = Object.entries(fieldCases).map(
@@ -35,10 +33,13 @@ export function generateBatchSQL<T extends object>(
   );
 
   setClauses.push(sql`${sql.raw(`"updatedBy"`)} = ${sql.param(updatedBy)}`);
+  setClauses.push(
+    sql`${sql.raw(`"updatedAt"`)} = ${sql.raw('CURRENT_TIMESTAMP')}`,
+  );
 
   return sql`
-    UPDATE ${table}
+    UPDATE ${sql.raw(table)}
     SET ${sql.join(setClauses, sql`, `)}
-    WHERE ${idKey} IN (${sql.join(ids, sql`, `)})
+    WHERE "${sql.raw(String(idKey))}" IN (${sql.join(ids, sql`, `)})
   `;
 }

@@ -1,5 +1,6 @@
 import { Type } from 'class-transformer';
 import {
+  ArrayMinSize,
   IsArray,
   IsBoolean,
   IsIn,
@@ -9,7 +10,7 @@ import {
   IsUUID,
   ValidateNested,
 } from 'class-validator';
-import { ImageType, VideoType } from 'src/modules/datasource';
+import { CategoryToUpdate, ImageType, VideoType } from 'src/modules/datasource';
 
 export class CreateProductDTO {
   @IsUUID()
@@ -40,6 +41,15 @@ export class CreateProductDTO {
   @IsArray()
   @IsString({ each: true })
   productTags?: string[];
+}
+
+export class UpdateProductDTO {
+  @IsUUID()
+  productId: string;
+
+  @IsOptional()
+  @IsString()
+  productName?: string;
 }
 
 export class ProductImageDTO {
@@ -94,4 +104,23 @@ export class UpdateProductObjDTO {
   @ValidateNested()
   @Type(() => ProductDescriptionDTO)
   productDescription?: ProductDescriptionDTO;
+}
+
+export class CategoryBatchUpdateDTO {
+  @IsArray()
+  @ArrayMinSize(1)
+  categoriesToUpdate: CategoryToUpdate[];
+
+  @IsUUID()
+  updatedBy: string;
+}
+
+export class ProductBatchUpdateDTO {}
+
+export class CreateCategoryDTO {
+  @IsString()
+  categoryName: string;
+
+  @IsUUID()
+  createdBy: string;
 }

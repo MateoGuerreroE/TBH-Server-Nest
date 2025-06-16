@@ -1,5 +1,5 @@
 {
-  "id": "eb95db7f-a2fb-458c-9b8d-ed0717dbeac5",
+  "id": "eb800f79-b90d-4f6a-a91c-2e4b7cfdc15a",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -223,6 +223,18 @@
           "notNull": false,
           "default": null
         },
+        "createdBy": {
+          "name": "createdBy",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "updatedBy": {
+          "name": "updatedBy",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
         "isEnabled": {
           "name": "isEnabled",
           "type": "boolean",
@@ -232,7 +244,34 @@
         }
       },
       "indexes": {},
-      "foreignKeys": {},
+      "foreignKeys": {
+        "categories_createdBy_admins_adminId_fk": {
+          "name": "categories_createdBy_admins_adminId_fk",
+          "tableFrom": "categories",
+          "tableTo": "admins",
+          "columnsFrom": [
+            "createdBy"
+          ],
+          "columnsTo": [
+            "adminId"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        },
+        "categories_updatedBy_admins_adminId_fk": {
+          "name": "categories_updatedBy_admins_adminId_fk",
+          "tableFrom": "categories",
+          "tableTo": "admins",
+          "columnsFrom": [
+            "updatedBy"
+          ],
+          "columnsTo": [
+            "adminId"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "categories_categoryName_unique": {
@@ -303,6 +342,98 @@
           ]
         }
       },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.discount_campaigns": {
+      "name": "discount_campaigns",
+      "schema": "",
+      "columns": {
+        "discountCampaignId": {
+          "name": "discountCampaignId",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "discountCampaignName": {
+          "name": "discountCampaignName",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "discountValue": {
+          "name": "discountValue",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "createdBy": {
+          "name": "createdBy",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "updatedBy": {
+          "name": "updatedBy",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "deletedAt": {
+          "name": "deletedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": null
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "discount_campaigns_createdBy_admins_adminId_fk": {
+          "name": "discount_campaigns_createdBy_admins_adminId_fk",
+          "tableFrom": "discount_campaigns",
+          "tableTo": "admins",
+          "columnsFrom": [
+            "createdBy"
+          ],
+          "columnsTo": [
+            "adminId"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        },
+        "discount_campaigns_updatedBy_admins_adminId_fk": {
+          "name": "discount_campaigns_updatedBy_admins_adminId_fk",
+          "tableFrom": "discount_campaigns",
+          "tableTo": "admins",
+          "columnsFrom": [
+            "updatedBy"
+          ],
+          "columnsTo": [
+            "adminId"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
@@ -585,6 +716,13 @@
           "primaryKey": false,
           "notNull": true
         },
+        "productTags": {
+          "name": "productTags",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'{}'"
+        },
         "discount": {
           "name": "discount",
           "type": "numeric(5, 2)",
@@ -609,7 +747,8 @@
           "name": "productImages",
           "type": "json",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "default": "'[]'::json"
         },
         "productDescription": {
           "name": "productDescription",
@@ -621,7 +760,8 @@
           "name": "productVideos",
           "type": "json",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "default": "'[]'::json"
         },
         "isActive": {
           "name": "isActive",
@@ -663,8 +803,8 @@
           "primaryKey": false,
           "notNull": true
         },
-        "deletedBy": {
-          "name": "deletedBy",
+        "discountCampaignId": {
+          "name": "discountCampaignId",
           "type": "uuid",
           "primaryKey": false,
           "notNull": false,
@@ -679,6 +819,45 @@
       },
       "indexes": {},
       "foreignKeys": {
+        "products_createdBy_admins_adminId_fk": {
+          "name": "products_createdBy_admins_adminId_fk",
+          "tableFrom": "products",
+          "tableTo": "admins",
+          "columnsFrom": [
+            "createdBy"
+          ],
+          "columnsTo": [
+            "adminId"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        },
+        "products_updatedBy_admins_adminId_fk": {
+          "name": "products_updatedBy_admins_adminId_fk",
+          "tableFrom": "products",
+          "tableTo": "admins",
+          "columnsFrom": [
+            "updatedBy"
+          ],
+          "columnsTo": [
+            "adminId"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        },
+        "products_discountCampaignId_discount_campaigns_discountCampaignId_fk": {
+          "name": "products_discountCampaignId_discount_campaigns_discountCampaignId_fk",
+          "tableFrom": "products",
+          "tableTo": "discount_campaigns",
+          "columnsFrom": [
+            "discountCampaignId"
+          ],
+          "columnsTo": [
+            "discountCampaignId"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        },
         "products_subCategoryId_subcategories_subCategoryId_fk": {
           "name": "products_subCategoryId_subcategories_subCategoryId_fk",
           "tableFrom": "products",
@@ -752,6 +931,18 @@
           "notNull": true,
           "default": true
         },
+        "createdBy": {
+          "name": "createdBy",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "updatedBy": {
+          "name": "updatedBy",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
         "categoryId": {
           "name": "categoryId",
           "type": "uuid",
@@ -761,6 +952,32 @@
       },
       "indexes": {},
       "foreignKeys": {
+        "subcategories_createdBy_admins_adminId_fk": {
+          "name": "subcategories_createdBy_admins_adminId_fk",
+          "tableFrom": "subcategories",
+          "tableTo": "admins",
+          "columnsFrom": [
+            "createdBy"
+          ],
+          "columnsTo": [
+            "adminId"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        },
+        "subcategories_updatedBy_admins_adminId_fk": {
+          "name": "subcategories_updatedBy_admins_adminId_fk",
+          "tableFrom": "subcategories",
+          "tableTo": "admins",
+          "columnsFrom": [
+            "updatedBy"
+          ],
+          "columnsTo": [
+            "adminId"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        },
         "subcategories_categoryId_categories_categoryId_fk": {
           "name": "subcategories_categoryId_categories_categoryId_fk",
           "tableFrom": "subcategories",
@@ -895,8 +1112,8 @@
           "notNull": false,
           "default": null
         },
-        "deleted_by": {
-          "name": "deleted_by",
+        "updatedBy": {
+          "name": "updatedBy",
           "type": "uuid",
           "primaryKey": false,
           "notNull": false
@@ -904,12 +1121,12 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "users_deleted_by_admins_adminId_fk": {
-          "name": "users_deleted_by_admins_adminId_fk",
+        "users_updatedBy_admins_adminId_fk": {
+          "name": "users_updatedBy_admins_adminId_fk",
           "tableFrom": "users",
           "tableTo": "admins",
           "columnsFrom": [
-            "deleted_by"
+            "updatedBy"
           ],
           "columnsTo": [
             "adminId"

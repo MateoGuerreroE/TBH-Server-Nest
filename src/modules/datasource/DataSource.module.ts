@@ -7,6 +7,7 @@ import {
   PaymentRepository,
   AddressRepository,
   ProductRepository,
+  CategoryRepository,
 } from './repositories';
 import { DataSourceClient } from './DataSourceClient';
 
@@ -20,10 +21,12 @@ import { DataSourceClient } from './DataSourceClient';
     PaymentRepository,
     OrderRepository,
     CouponRepository,
+    CategoryRepository,
   ],
   exports: [
     ProductRepository,
     AddressRepository,
+    CategoryRepository,
     UserRepository,
     PaymentRepository,
     OrderRepository,
