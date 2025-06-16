@@ -35,7 +35,7 @@ export const userTable = pgTable('users', {
 
   lastLoginAt: timestamp({ mode: 'date' }).default(null),
 
-  deletedBy: uuid('deleted_by').references(() => adminTable.adminId, {
+  updatedBy: uuid().references(() => adminTable.adminId, {
     onDelete: 'set null',
   }),
 });
@@ -59,8 +59,8 @@ export const adminTable = pgTable('admins', {
 });
 
 export const userRelations = relations(userTable, ({ one, many }) => ({
-  deletedByAdmin: one(adminTable, {
-    fields: [userTable.deletedBy],
+  updatedBy: one(adminTable, {
+    fields: [userTable.updatedBy],
     references: [adminTable.adminId],
   }),
   addresses: many(addressTable),
@@ -102,9 +102,18 @@ export const productTable = pgTable('products', {
   createdAt: timestamp({ mode: 'date' }).notNull().defaultNow(),
   updatedAt: timestamp({ mode: 'date' }).notNull().defaultNow(),
   deletedAt: timestamp({ mode: 'date' }).default(null),
-  createdBy: uuid().notNull(),
-  updatedBy: uuid().notNull(),
-  deletedBy: uuid().default(null),
+  createdBy: uuid()
+    .references(() => adminTable.adminId, { onDelete: 'set null' })
+    .notNull(),
+  updatedBy: uuid()
+    .references(() => adminTable.adminId, { onDelete: 'set null' })
+    .notNull(),
+
+  discountCampaignId: uuid()
+    .references(() => discountCampaignsTable.discountCampaignId, {
+      onDelete: 'set null',
+    })
+    .default(null),
 
   subCategoryId: uuid('subCategoryId')
     .references(() => subcategoryTable.subCategoryId, { onDelete: 'cascade' })
@@ -117,6 +126,13 @@ export const categoryTable = pgTable('categories', {
   createdAt: timestamp({ mode: 'date' }).notNull().defaultNow(),
   updatedAt: timestamp({ mode: 'date' }).notNull().defaultNow(),
   deletedAt: timestamp({ mode: 'date' }).default(null),
+
+  createdBy: uuid()
+    .references(() => adminTable.adminId, { onDelete: 'set null' })
+    .notNull(),
+  updatedBy: uuid()
+    .references(() => adminTable.adminId, { onDelete: 'set null' })
+    .notNull(),
   isEnabled: boolean().notNull().default(true),
 });
 
@@ -128,9 +144,33 @@ export const subcategoryTable = pgTable('subcategories', {
   deletedAt: timestamp({ mode: 'date' }).default(null),
   isEnabled: boolean().notNull().default(true),
 
+  createdBy: uuid()
+    .references(() => adminTable.adminId, { onDelete: 'set null' })
+    .notNull(),
+  updatedBy: uuid()
+    .references(() => adminTable.adminId, { onDelete: 'set null' })
+    .notNull(),
+
   categoryId: uuid('categoryId')
     .references(() => categoryTable.categoryId, { onDelete: 'cascade' })
     .notNull(),
+});
+
+export const discountCampaignsTable = pgTable('discount_campaigns', {
+  discountCampaignId: uuid().primaryKey().defaultRandom(),
+  discountCampaignName: varchar({ length: 100 }).notNull(),
+  discountValue: numeric({ precision: 10, scale: 2 }).notNull(),
+
+  createdBy: uuid()
+    .references(() => adminTable.adminId, { onDelete: 'set null' })
+    .notNull(),
+  updatedBy: uuid()
+    .references(() => adminTable.adminId, { onDelete: 'set null' })
+    .notNull(),
+
+  createdAt: timestamp({ mode: 'date' }).notNull().defaultNow(),
+  updatedAt: timestamp({ mode: 'date' }).notNull().defaultNow(),
+  deletedAt: timestamp({ mode: 'date' }).default(null),
 });
 
 export const categoryRelations = relations(categoryTable, ({ many }) => ({
@@ -153,7 +193,18 @@ export const productRelations = relations(productTable, ({ one }) => ({
     fields: [productTable.subCategoryId],
     references: [subcategoryTable.subCategoryId],
   }),
+  discountCampaign: one(discountCampaignsTable, {
+    fields: [productTable.discountCampaignId],
+    references: [discountCampaignsTable.discountCampaignId],
+  }),
 }));
+
+export const discountCampaignRelations = relations(
+  discountCampaignsTable,
+  ({ many }) => ({
+    products: many(productTable),
+  }),
+);
 
 // Payment
 export const orderTable = pgTable('orders', {

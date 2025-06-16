@@ -149,7 +149,7 @@ export class ProductRepository {
       .set({
         isActive: false,
         deletedAt: new Date(),
-        deletedBy: author ?? 'SYSTEM',
+        updatedBy: author ?? 'SYSTEM',
       })
       .where(eq(schema.productTable.productId, productId))
       .returning();

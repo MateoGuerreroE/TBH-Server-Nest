@@ -36,7 +36,6 @@ export interface ProductRecord {
   deletedAt: Date | null;
   createdBy: string;
   updatedBy: string;
-  deletedBy: string | null;
   subCategoryId: string;
   subCategory?: SubcategoryRecord | null;
 }
@@ -48,6 +47,18 @@ export interface CategoryRecord {
   updatedAt: Date;
   deletedAt: Date | null;
   isEnabled: boolean;
+}
+
+export interface CategoryToCreate {
+  categoryName: string;
+  createdBy: string;
+}
+
+export interface CategoryToUpdate {
+  categoryId: string;
+  categoryName?: string;
+  updatedBy: string;
+  isEnabled?: boolean;
 }
 
 export interface SubcategoryRecord {

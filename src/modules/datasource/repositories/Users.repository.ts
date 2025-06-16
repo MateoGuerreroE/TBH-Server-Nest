@@ -15,7 +15,7 @@ export class UserRepository {
   async getAllUsers(): Promise<UserRecord[]> {
     return this.client.query.userTable.findMany({
       with: {
-        deletedByAdmin: {},
+        updatedBy: {},
       },
     });
   }
@@ -64,7 +64,7 @@ export class UserRepository {
       .set({
         isEnabled: disable,
         deletedAt: disable ? new Date() : null,
-        deletedBy: disable ? admin : null,
+        updatedBy: disable ? admin : null,
       })
       .where(eq(schema.userTable.userId, userId))
       .returning({ userId: schema.userTable.userId });

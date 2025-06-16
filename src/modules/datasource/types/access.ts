@@ -14,7 +14,6 @@ export type UserRecord = {
   updatedAt: Date;
   deletedAt: Date | null;
   lastLoginAt: Date | null;
-  deletedBy: string;
 };
 
 export type UserRecordWithRelation = UserRecord & {
