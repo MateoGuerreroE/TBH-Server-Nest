@@ -33,17 +33,6 @@ export class CategoryRepository {
     return result[0];
   }
 
-  async updateCategory(data: CategoryToUpdate): Promise<CategoryRecord | null> {
-    const { categoryId, ...updatedData } = data;
-    const result = await this.client
-      .update(schema.categoryTable)
-      .set(updatedData)
-      .where(eq(schema.categoryTable.categoryId, categoryId))
-      .returning();
-
-    return result[0] ?? null;
-  }
-
   async updateBatchCategories(
     data: CategoryToUpdate[],
     updatedBy: string,

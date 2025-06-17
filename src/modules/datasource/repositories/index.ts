@@ -6,3 +6,4 @@ export * from './Payment.repository';
 export * from './Coupon.repository';
 export * from './Address.repository';
 export * from './Category.repository';
+export * from './SubCategory.repository';

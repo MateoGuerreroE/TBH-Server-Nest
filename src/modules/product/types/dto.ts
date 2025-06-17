@@ -10,12 +10,7 @@ import {
   IsUUID,
   ValidateNested,
 } from 'class-validator';
-import {
-  CategoryToUpdate,
-  ImageType,
-  UpdateProductAttributeData,
-  VideoType,
-} from 'src/modules/datasource';
+import { CategoryToUpdate, ImageType, VideoType } from 'src/modules/datasource';
 
 export class CreateProductDTO {
   @IsUUID()
@@ -162,4 +157,37 @@ export class CreateCategoryDTO {
 
   @IsUUID()
   createdBy: string;
+}
+
+export class CreateSubCategoryDTO {
+  @IsString()
+  subCategoryName: string;
+
+  @IsUUID()
+  categoryId: string;
+
+  @IsUUID()
+  createdBy: string;
+}
+
+export class UpdateSubCategoryDTO {
+  @IsUUID()
+  subCategoryId: string;
+
+  @IsOptional()
+  @IsString()
+  subCategoryName?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  isEnabled?: boolean;
+}
+
+export class UpdateSubCategoryBatchDTO {
+  @IsArray()
+  @ArrayMinSize(1)
+  subCategoriesToUpdate: UpdateSubCategoryDTO[];
+
+  @IsUUID()
+  updatedBy: string;
 }

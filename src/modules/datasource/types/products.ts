@@ -135,3 +135,33 @@ export interface ProductPublicFilters {
 }
 
 export type ProductFilters = ProductPublicFilters & CategoryFilters;
+
+export interface SubCategoryRecord {
+  subCategoryId: string;
+  subCategoryName: string;
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt: Date | null;
+  isEnabled: boolean;
+  categoryId: string;
+  updatedBy: string;
+  createdBy: string;
+}
+
+export interface SubCategoryWithRelations extends SubCategoryRecord {
+  category: CategoryRecord | null;
+  products: ProductRecord[] | null;
+}
+
+export interface SubCategoryToCreate {
+  subCategoryName: string;
+  categoryId: string;
+  createdBy: string;
+}
+
+export interface SubCategoryToUpdate {
+  subCategoryId: string;
+  subCategoryName?: string;
+  isEnabled?: boolean;
+  categoryId?: string;
+}
