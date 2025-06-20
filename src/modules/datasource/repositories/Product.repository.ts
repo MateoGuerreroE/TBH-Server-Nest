@@ -130,10 +130,6 @@ export class ProductRepository {
       updatedBy,
     );
 
-    const test = new PgDialect();
-    const printable = test.sqlToQuery(batchSQL);
-    console.log(printable.sql, printable.params);
-
     const updates = await this.client.execute(batchSQL);
     return !!updates.rowCount;
   }

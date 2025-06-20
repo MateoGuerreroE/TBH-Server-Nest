@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { SubCategoryService } from '../services/SubCategory.service';
 import { LoggingService } from 'src/modules/logging';
 import {
@@ -16,6 +16,16 @@ export class SubCategoryController {
     private readonly subCategoryService: SubCategoryService,
     private readonly logger: LoggingService,
   ) {}
+
+  @Get()
+  async getSubCategories(): Promise<ControllerResponse<SubCategoryRecord[]>> {
+    try {
+      const result = await this.subCategoryService.getAllSubCategories();
+      return SuccessResponse.send(result);
+    } catch (error) {
+      return handleControllerError(error, this.logger);
+    }
+  }
 
   @Post('create')
   async createSubCategory(

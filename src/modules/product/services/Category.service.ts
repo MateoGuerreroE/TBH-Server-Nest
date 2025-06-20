@@ -14,6 +14,13 @@ export class CategoryService {
     private readonly logger: LoggingService,
   ) {}
 
+  async getAllCategories(): Promise<CategoryRecord[]> {
+    this.logger.debug(`Fetching all categories`);
+    const categories = await this.categoryRepository.getAllCategories();
+    this.logger.debug(`Found ${categories.length} categories`);
+    return categories;
+  }
+
   async updateCategoryBatch(
     data: CategoryToUpdate[],
     updatedBy: string,

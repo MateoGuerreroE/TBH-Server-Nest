@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { CategoryService } from '../services';
 import {
   ControllerResponse,
@@ -16,6 +16,16 @@ export class CategoryController {
     private readonly categoryService: CategoryService,
     private readonly logger: LoggingService,
   ) {}
+
+  @Get()
+  async getAllCategories(): Promise<ControllerResponse<CategoryRecord[]>> {
+    try {
+      const categories = await this.categoryService.getAllCategories();
+      return SuccessResponse.send(categories);
+    } catch (error) {
+      return handleControllerError(error, this.logger);
+    }
+  }
 
   @Post('create')
   async createCategory(

@@ -21,11 +21,11 @@ export function generateBatchSQL<T extends object>(
       .filter((update) => field in update)
       .map(
         (update) =>
-          sql`WHEN ${sql.param(update[idKey])} THEN ${typeof update[field] === 'number' ? sql.raw(`${update[field]}`) : sql.param(update[field as keyof T])} ELSE ${sql.raw(`"${field}"`)}`,
+          sql`WHEN ${sql.param(update[idKey])} THEN ${typeof update[field] === 'number' ? sql.raw(`${update[field]}`) : sql.param(update[field as keyof T])}`,
       );
 
     fieldCases[field] =
-      sql`CASE "${sql.raw(String(idKey))}" ${sql.join(cases, sql.raw(' '))} END`;
+      sql`CASE "${sql.raw(String(idKey))}" ${sql.join(cases, sql.raw(' '))} ELSE ${sql.raw(`"${field}"`)} END`;
   }
 
   const setClauses = Object.entries(fieldCases).map(
