@@ -74,7 +74,7 @@ export const productTable = pgTable('products', {
   productTags: text().array().default([]),
   discount: numeric({ precision: 5, scale: 2 }).default('0'),
   stock: integer().notNull().default(0),
-  externalId: varchar({ length: 100 }).notNull().unique(),
+  externalId: text().default(null).unique(),
   productImages: json()
     .$type<
       Array<{
@@ -82,7 +82,6 @@ export const productTable = pgTable('products', {
         isPrimary: boolean;
         altText?: string;
         type: ImageType;
-        color: string;
       }>
     >()
     .default([]),

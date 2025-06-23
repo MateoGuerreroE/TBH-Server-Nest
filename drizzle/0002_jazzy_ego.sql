@@ -1,0 +1,1 @@
+ALTER TABLE "products" ALTER COLUMN "externalId" SET DATA TYPE varchar(255);

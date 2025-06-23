@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  Query,
+} from '@nestjs/common';
 import { ProductFilters, ProductRecord } from 'src/modules/datasource';
 import {
   ControllerResponse,
@@ -99,6 +108,34 @@ export class ProductController {
         payload,
       );
 
+      return SuccessResponse.send(result);
+    } catch (e) {
+      return handleControllerError(e, this.logger);
+    }
+  }
+
+  @Delete(':productId')
+  async deleteProduct(
+    @Param() params: { productId: string },
+  ): Promise<ControllerResponse<boolean>> {
+    try {
+      const result = await this.productService.deleteProduct(
+        params.productId.trim(),
+      );
+      return SuccessResponse.send(result);
+    } catch (e) {
+      return handleControllerError(e, this.logger);
+    }
+  }
+
+  @Post('_dev/createProducts')
+  async __devCreateProducts(
+    @Body() products: { products: CreateProductDTO[] },
+  ): Promise<ControllerResponse<number>> {
+    try {
+      const result = await this.productService.__devCreateProducts(
+        products.products,
+      );
       return SuccessResponse.send(result);
     } catch (e) {
       return handleControllerError(e, this.logger);

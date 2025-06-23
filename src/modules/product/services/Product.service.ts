@@ -160,4 +160,48 @@ export class ProductService {
 
     return true;
   }
+
+  async deleteProduct(productId: string): Promise<boolean> {
+    try {
+      this.logger.debug(`Deleting product with ID: ${productId}`);
+      const product = await this.productRepository.getProductById(productId);
+      if (!product) {
+        this.logger.warn(`Product with ID ${productId} not found for deletion`);
+        throw new BusinessError(
+          `Unable to delete product`,
+          `Product with ID ${productId} does not exist`,
+        );
+      }
+      await this.productRepository.deleteProduct(productId);
+      return true;
+    } catch (e) {
+      this.logger.warn(`Unable to delete product: ${e.message}`);
+      return false;
+    }
+  }
+
+  async __devCreateProducts(products: CreateProductDTO[]): Promise<number> {
+    this.logger.debug(`Creating multiple products in dev mode`);
+    try {
+      const result = await this.productRepository.__createProducts(
+        products.map((p) => ({
+          ...p,
+          updatedBy: p.createdBy,
+          productTags: p.productTags || [],
+          productPrice: p.productPrice.toString(),
+          stock: p.stock || 0,
+          discount: p.discount ? p.discount.toString() : '0',
+        })),
+      );
+      console.log('HEY!');
+      return result;
+    } catch (e) {
+      console.log(e);
+      this.logger.error(`Error creating products in dev mode`);
+      throw new BusinessError(
+        `Unable to create products`,
+        `An error occurred while creating products in dev mode`,
+      );
+    }
+  }
 }

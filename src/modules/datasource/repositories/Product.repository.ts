@@ -13,7 +13,6 @@ import {
 } from '../types/products';
 import { eq, inArray, sql } from 'drizzle-orm';
 import { generateBatchSQL } from '../utils/utils';
-import { PgDialect } from 'drizzle-orm/pg-core';
 
 @Injectable()
 export class ProductRepository {
@@ -24,6 +23,7 @@ export class ProductRepository {
 
   async getAllProduct(): Promise<ProductRecord[]> {
     return this.client.query.productTable.findMany({
+      where: (product, { isNull }) => isNull(product.deletedAt),
       with: {
         subCategory: {},
       },
@@ -34,7 +34,11 @@ export class ProductRepository {
     subCategoryId: string,
   ): Promise<ProductWithSubCategory[]> {
     return this.client.query.productTable.findMany({
-      where: (product, { eq }) => eq(product.subCategoryId, subCategoryId),
+      where: (product, { and, eq, isNull }) =>
+        and(
+          eq(product.subCategoryId, subCategoryId),
+          isNull(product.deletedAt),
+        ),
       with: {
         subCategory: true,
       },
@@ -78,6 +82,14 @@ export class ProductRepository {
     });
   }
 
+  async __createProducts(productData: CreateProductData[]): Promise<number> {
+    const insertedProducts = await this.client
+      .insert(schema.productTable)
+      .values(productData);
+
+    return insertedProducts.rowCount;
+  }
+
   async createProductRecord(
     productData: CreateProductData,
   ): Promise<ProductRecord> {
@@ -86,7 +98,12 @@ export class ProductRepository {
       .values(productData)
       .returning();
 
-    return newProduct[0];
+    return this.client.query.productTable.findFirst({
+      where: eq(schema.productTable.productId, newProduct[0].productId),
+      with: {
+        subCategory: true,
+      },
+    });
   }
 
   async getFilteredProducts(
@@ -164,7 +181,7 @@ export class ProductRepository {
       .set({
         isActive: false,
         deletedAt: new Date(),
-        updatedBy: author ?? 'SYSTEM',
+        updatedBy: author ?? 'e7bc3690-48ee-424f-9ce3-2572372bdb66', //! TODO REMOVE THIS
       })
       .where(eq(schema.productTable.productId, productId))
       .returning();

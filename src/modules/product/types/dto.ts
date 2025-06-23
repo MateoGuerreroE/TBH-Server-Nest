@@ -28,6 +28,7 @@ export class CreateProductDTO {
   discount: number;
 
   @IsString()
+  @IsOptional()
   externalId: string;
 
   @IsUUID()
@@ -98,11 +99,8 @@ export class ProductImageDTO {
   altText?: string;
 
   @IsString()
-  @IsIn(['color', 'sizing'])
+  @IsIn(['base', 'sizing'])
   type: ImageType;
-
-  @IsString()
-  color: string;
 }
 
 export class ProductVideoDTO {

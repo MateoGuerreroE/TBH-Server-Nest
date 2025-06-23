@@ -3,7 +3,7 @@ export type ProductDescription = {
   content: string;
 };
 
-export type ImageType = 'color' | 'sizing';
+export type ImageType = 'base' | 'sizing';
 export type VideoType = 'main' | 'demo' | 'setup' | 'use';
 
 export type ProductImage = {
@@ -11,7 +11,6 @@ export type ProductImage = {
   isPrimary: boolean;
   altText?: string;
   type: ImageType;
-  color: string;
 };
 
 export type ProductVideo = {
