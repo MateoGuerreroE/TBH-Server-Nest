@@ -14,11 +14,11 @@ import {
 import { ExternalPaymentData, ExternalPaymentResponse } from './payment';
 import { Exclude, Type } from 'class-transformer';
 import {
-  CreateCouponData,
-  CreateOrderData,
-  CreateOrderItemData,
-  UpdateOrderData,
-} from 'src/modules/datasource';
+  ICreateCoupon,
+  ICreateOrder,
+  ICreateOrderItem,
+  IUpdateOrder,
+} from 'tbh-shared-types';
 
 export class UpdatePaymentDTO {
   @IsUUID()
@@ -96,7 +96,7 @@ export class CreateOrderDTO {
   @Type(() => OrderItemDTO)
   items: OrderItemDTO[];
 
-  getOrder(): CreateOrderData {
+  getOrder(): Omit<ICreateOrder, 'items'> {
     return {
       orderProductTotal: this.orderProductTotal.toString(),
       taxes: this.taxes.toString(),
@@ -117,7 +117,7 @@ export class OrderItemDTO {
   priceAtPurchase: number;
 
   @Exclude()
-  getOrderItem(): Omit<CreateOrderItemData, 'orderId'> {
+  getOrderItem(): Omit<ICreateOrderItem, 'orderId'> {
     return {
       productId: this.productId,
       amount: this.amount.toString(),
@@ -155,7 +155,7 @@ export class UpdateOrderDTO {
   couponId?: string | null;
 
   @Exclude()
-  getOrder(): UpdateOrderData {
+  getOrder(): IUpdateOrder {
     return {
       orderProductTotal: this.orderProductTotal?.toString(),
       userId: this.userId,
@@ -179,7 +179,7 @@ export class CreateCouponDTO {
   expiresAt: string;
 
   @Exclude()
-  getCoupon(): CreateCouponData {
+  getCoupon(): ICreateCoupon {
     return {
       couponCode: this.couponCode,
       discountAmount: this.discountAmount.toString(),

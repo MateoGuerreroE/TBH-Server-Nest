@@ -1,7 +1,7 @@
 import { InferSelectModel } from 'drizzle-orm';
 import { ExternalPaymentResponse } from 'src/modules/payment/types';
 import { paymentTable } from '../schema/schema';
-import { OrderRecordWithProducts } from './order';
+import { IOrderWithRelations } from 'tbh-shared-types';
 
 export interface PaymentRecord {
   paymentId: string;
@@ -17,7 +17,7 @@ export interface PaymentRecord {
 export type Payment = InferSelectModel<typeof paymentTable>;
 
 export interface PaymentWithOrder extends PaymentRecord {
-  order: OrderRecordWithProducts;
+  order: IOrderWithRelations;
 }
 
 export interface CreatePaymentData {

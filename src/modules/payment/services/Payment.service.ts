@@ -11,7 +11,8 @@ import { MercadoLibreService } from './MercadoLibre.service';
 import { OrderManagementService } from './OrderManagement.service';
 import { validatePayload } from 'src/utils/response';
 import { UserService } from 'src/modules/access';
-import { AddressRepository, OrderRecord } from 'src/modules/datasource';
+import { AddressRepository } from 'src/modules/datasource';
+import { IOrderRecord } from 'tbh-shared-types';
 
 @Injectable()
 export class PaymentService {
@@ -58,7 +59,7 @@ export class PaymentService {
         shipping.emailAddress,
       );
 
-      const orderModifications: Partial<OrderRecord> = {
+      const orderModifications: Partial<IOrderRecord> = {
         orderId: order.orderId,
         paymentId: paymentRecord.paymentId,
       };

@@ -54,8 +54,8 @@ importers:
         specifier: ^7.8.1
         version: 7.8.2
       tbh-shared-types:
-        specifier: ^1.0.2
-        version: 1.0.2
+        specifier: ^1.0.3
+        version: 1.0.3
     devDependencies:
       '@nestjs/cli':
         specifier: ^10.0.0
@@ -78,6 +78,9 @@ importers:
       '@types/supertest':
         specifier: ^6.0.0
         version: 6.0.3
+      '@types/yargs':
+        specifier: ^17.0.33
+        version: 17.0.33
       '@typescript-eslint/eslint-plugin':
         specifier: ^8.0.0
         version: 8.32.1(@typescript-eslint/parser@8.32.1(eslint@8.57.1)(typescript@5.8.3))(eslint@8.57.1)(typescript@5.8.3)
@@ -3386,8 +3389,8 @@ packages:
     resolution: {integrity: sha512-Re10+NauLTMCudc7T5WLFLAwDhQ0JWdrMK+9B2M8zR5hRExKmsRDCBA7/aV/pNJFltmBFO5BAMlQFi/vq3nKOg==}
     engines: {node: '>=6'}
 
-  tbh-shared-types@1.0.2:
-    resolution: {integrity: sha512-nM/nSvI0O6cSw18BXwQKMs7MdQjjU2Sg5JjRGJA/MyguoN+ys/re6qTFJhBjlZ2TZgRR8vbNw3oLrf7BZkPEwg==}
+  tbh-shared-types@1.0.3:
+    resolution: {integrity: sha512-Zwx/1UMpuLIi0GNDKX5t5x/GDZlyzDUo5+Dwl4QUARWAnHmTmHCG7XphJE3g0ZgSUzaACOrAXVNdVbihZFyMjQ==}
 
   teeny-request@9.0.0:
     resolution: {integrity: sha512-resvxdc6Mgb7YEThw6G6bExlXKkv6+YbuzGg9xuXxSgxJF7Ozs+o8Y9+2R3sArdWdW8nOokoQb1yrpFB0pQK2g==}
@@ -7466,7 +7469,7 @@ snapshots:
 
   tapable@2.2.2: {}
 
-  tbh-shared-types@1.0.2: {}
+  tbh-shared-types@1.0.3: {}
 
   teeny-request@9.0.0:
     dependencies:

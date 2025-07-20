@@ -1,15 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import {
-  CreateUserData,
-  UserRecord,
-  UserRepository,
-} from 'src/modules/datasource';
+import { UserRepository } from 'src/modules/datasource';
 import { BusinessError, CustomError } from 'src/types';
 import { err, ok, Result } from 'neverthrow';
-import { UserLogin } from '../types';
 import { FirebaseService } from './Firebase.service';
 import { LoggingService } from 'src/modules/logging';
 import { JwtService } from './Jwt.service';
+import { ICreateUser, IUserLoginData, IUserRecord } from 'tbh-shared-types';
 
 @Injectable()
 export class UserService {
@@ -20,14 +16,14 @@ export class UserService {
     private readonly logger: LoggingService,
   ) {}
 
-  async getUserById(userId: string): Promise<UserRecord | null> {
+  async getUserById(userId: string): Promise<IUserRecord | null> {
     this.logger.debug(`Fetching user with ID: ${userId}`);
     return this.userRepository.getUserById(userId);
   }
 
   async getUserByEmailAddress(
     emailAddress: string,
-  ): Promise<Result<UserRecord, string>> {
+  ): Promise<Result<IUserRecord, string>> {
     this.logger.debug(`Fetching user with email: ${emailAddress}`);
     const user = await this.userRepository.getUserByEmailAddress(emailAddress);
     if (!user) {
@@ -36,7 +32,9 @@ export class UserService {
     return ok(user);
   }
 
-  async updateUser(userData: Partial<UserRecord> & { userId: string }) {
+  async updateUser(
+    userData: Partial<IUserRecord> & { userId: string },
+  ): Promise<string | null> {
     this.logger.debug(`Updating user with ID: ${userData.userId}`);
     const user = await this.userRepository.updateUser(userData);
     if (!user) {
@@ -45,7 +43,7 @@ export class UserService {
     return this.userRepository.updateUser(userData);
   }
 
-  async createUser(userToCreate: CreateUserData) {
+  async createUser(userToCreate: ICreateUser): Promise<IUserRecord> {
     const { emailAddress, firebaseId } = userToCreate;
     const existentUser =
       await this.userRepository.getUserByEmailAddress(emailAddress);
@@ -72,7 +70,7 @@ export class UserService {
     return this.userRepository.createUser(userToCreate);
   }
 
-  async loginUser(token: string): Promise<UserLogin> {
+  async loginUser(token: string): Promise<IUserLoginData> {
     try {
       this.logger.debug(`Attempting to log user with token: ${token}`);
       const firebaseUser = await this.firebaseService.verifyToken(token);
@@ -115,7 +113,7 @@ export class UserService {
     }
   }
 
-  private verifyUser(user: UserRecord): Result<boolean, string> {
+  private verifyUser(user: IUserRecord): Result<boolean, string> {
     if (!user.isEmailVerified) return err('Email not verified');
     if (!user.isEnabled) return err('User not found');
     return ok(true);

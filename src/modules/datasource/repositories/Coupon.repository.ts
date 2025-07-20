@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { NeonHttpDatabase } from 'drizzle-orm/neon-http';
 import * as schema from '../schema/schema';
 import { DataSourceClient } from '../DataSourceClient';
-import { CouponRecord, CreateCouponData, UpdateCouponData } from '../types';
 import { eq } from 'drizzle-orm';
+import { ICouponRecord, ICreateCoupon, IUpdateCoupon } from 'tbh-shared-types';
 
 @Injectable()
 export class CouponRepository {
@@ -12,25 +12,25 @@ export class CouponRepository {
     this.client = this.datasource.getClient();
   }
 
-  async getAllCoupons(): Promise<CouponRecord[]> {
+  async getAllCoupons(): Promise<ICouponRecord[]> {
     return this.client.query.couponTable.findMany({
       orderBy: (coupon, { desc }) => desc(coupon.expiresAt),
     });
   }
 
-  async getCouponById(couponId: string): Promise<CouponRecord | null> {
+  async getCouponById(couponId: string): Promise<ICouponRecord | null> {
     return this.client.query.couponTable.findFirst({
       where: (coupon, { eq }) => eq(coupon.couponId, couponId),
     });
   }
 
-  async getCouponByCode(couponCode: string): Promise<CouponRecord | null> {
+  async getCouponByCode(couponCode: string): Promise<ICouponRecord | null> {
     return this.client.query.couponTable.findFirst({
       where: (coupon, { eq }) => eq(coupon.couponCode, couponCode),
     });
   }
 
-  async createCoupon(data: CreateCouponData): Promise<CouponRecord> {
+  async createCoupon(data: ICreateCoupon): Promise<ICouponRecord> {
     const result = await this.client
       .insert(schema.couponTable)
       .values({
@@ -41,7 +41,7 @@ export class CouponRepository {
     return result[0];
   }
 
-  async updateCoupon(data: UpdateCouponData): Promise<CouponRecord | null> {
+  async updateCoupon(data: IUpdateCoupon): Promise<ICouponRecord | null> {
     const { couponId, ...updateData } = data;
     const result = await this.client
       .update(schema.couponTable)

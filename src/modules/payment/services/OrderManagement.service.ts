@@ -1,21 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import {
-  CreateOrderItemData,
-  OrderRecord,
-  OrderRecordWithProducts,
-  OrderRepository,
-  OrderWithRelations,
-} from 'src/modules/datasource';
+import { OrderRepository } from 'src/modules/datasource';
 import { CreateOrderDTO, UpdateOrderDTO } from '../types';
 import { BusinessError, CustomError } from 'src/types';
+import { IOrderWithRelations } from 'packages/tbh-shared-types/dist';
+import { ICreateOrderItem, IOrderRecord } from 'tbh-shared-types';
 
 @Injectable()
 export class OrderManagementService {
   constructor(private readonly orderRepository: OrderRepository) {}
 
-  async getOrderWithProducts(
-    orderId: string,
-  ): Promise<OrderRecordWithProducts> {
+  async getOrderWithProducts(orderId: string): Promise<IOrderWithRelations> {
     const order = await this.orderRepository.getOrderWithProducts(orderId);
     if (!order) {
       throw new BusinessError(
@@ -26,7 +20,7 @@ export class OrderManagementService {
     return order;
   }
 
-  async getCompleteOrder(orderId: string): Promise<OrderWithRelations> {
+  async getCompleteOrder(orderId: string): Promise<IOrderWithRelations> {
     const order = await this.orderRepository.getOrderWithRelations(orderId);
     if (!order) {
       throw new BusinessError(
@@ -39,7 +33,7 @@ export class OrderManagementService {
 
   async createInitialOrder(
     initialOrder: CreateOrderDTO,
-  ): Promise<OrderRecordWithProducts> {
+  ): Promise<IOrderWithRelations> {
     try {
       const { items } = initialOrder;
       const order = await this.orderRepository.createOrder(
@@ -47,7 +41,7 @@ export class OrderManagementService {
       );
 
       const orderId = order.orderId;
-      const orderItems: CreateOrderItemData[] = items.map((item) => ({
+      const orderItems: ICreateOrderItem[] = items.map((item) => ({
         orderId,
         ...item.getOrderItem(),
       }));
@@ -92,7 +86,7 @@ export class OrderManagementService {
     }
   }
 
-  async updateOrder(updateOrder: UpdateOrderDTO): Promise<OrderRecord> {
+  async updateOrder(updateOrder: UpdateOrderDTO): Promise<IOrderRecord> {
     try {
       const { orderId } = updateOrder;
 

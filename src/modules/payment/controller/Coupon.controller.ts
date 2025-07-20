@@ -1,5 +1,4 @@
 import { Body, Controller, Get, Post, Query } from '@nestjs/common';
-import { CouponRecord } from 'src/modules/datasource';
 import {
   ControllerResponse,
   handleControllerError,
@@ -10,6 +9,7 @@ import { CouponService } from '../services/Coupon.service';
 import { LoggingService } from 'src/modules/logging';
 import { CreateCouponDTO } from '../types';
 import { ControllerError } from 'src/types';
+import { ICouponRecord } from 'tbh-shared-types';
 
 @Controller('coupon')
 export class CouponController {
@@ -18,7 +18,7 @@ export class CouponController {
     private readonly logger: LoggingService,
   ) {}
   @Post('create')
-  async createCoupon(@Body() body): Promise<ControllerResponse<CouponRecord>> {
+  async createCoupon(@Body() body): Promise<ControllerResponse<ICouponRecord>> {
     try {
       const payload = await validatePayload(CreateCouponDTO, body);
       const coupon = await this.couponService.createCoupon(payload);
@@ -31,7 +31,7 @@ export class CouponController {
   @Get('validate')
   async validateCoupon(
     @Query('couponCode') couponCode: string,
-  ): Promise<ControllerResponse<CouponRecord>> {
+  ): Promise<ControllerResponse<ICouponRecord>> {
     try {
       if (!couponCode) {
         throw new ControllerError(

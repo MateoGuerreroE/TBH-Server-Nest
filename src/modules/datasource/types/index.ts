@@ -1,5 +1,6 @@
-export * from './access';
-export * from './order';
+import { ICreateOrder } from 'tbh-shared-types';
+
 export * from './payment';
 export * from './products';
-export * from './coupon';
+
+export type BaseCreateOrder = Omit<ICreateOrder, 'items'>;

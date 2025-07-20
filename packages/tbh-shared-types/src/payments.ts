@@ -38,8 +38,8 @@ export interface ICreatePayment {
 export interface ICreateOrder {
   userId?: string;
   couponId?: string;
-  taxes: number;
-  orderProductTotal: number;
+  taxes: string;
+  orderProductTotal: string;
   items: IOrderItem[];
 }
 
@@ -52,8 +52,8 @@ export interface IOrderItem {
 export interface IUpdateOrder {
   orderId: string;
   addressId?: string;
-  orderProductTotal?: number;
-  taxes?: number;
+  orderProductTotal?: string;
+  taxes?: string;
   userId?: string;
   paymentId?: string | null;
   couponId?: string | null;

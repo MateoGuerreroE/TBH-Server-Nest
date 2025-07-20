@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { CouponRecord, CouponRepository } from 'src/modules/datasource';
+import { CouponRepository } from 'src/modules/datasource';
 import { LoggingService } from 'src/modules/logging';
 import { BusinessError } from 'src/types';
 import { CreateCouponDTO } from '../types';
+import { ICouponRecord } from 'tbh-shared-types';
 
 @Injectable()
 export class CouponService {
@@ -11,7 +12,7 @@ export class CouponService {
     private readonly logger: LoggingService,
   ) {}
 
-  async getCouponByCode(couponCode: string): Promise<CouponRecord> {
+  async getCouponByCode(couponCode: string): Promise<ICouponRecord> {
     const coupon = await this.couponRepository.getCouponByCode(couponCode);
     if (!coupon) {
       this.logger.error('No coupon found');
@@ -24,7 +25,7 @@ export class CouponService {
     return coupon;
   }
 
-  async createCoupon(data: CreateCouponDTO): Promise<CouponRecord> {
+  async createCoupon(data: CreateCouponDTO): Promise<ICouponRecord> {
     try {
       const coupon = await this.couponRepository.createCoupon(data.getCoupon());
       return coupon;

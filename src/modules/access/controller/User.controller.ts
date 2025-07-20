@@ -9,7 +9,7 @@ import {
   validatePayload,
 } from 'src/utils/response';
 import { LoggingService } from 'src/modules/logging';
-import { UserRecord } from 'src/modules/datasource';
+import { IUserRecord } from 'tbh-shared-types';
 
 @Controller('user')
 export class UserController {
@@ -30,7 +30,7 @@ export class UserController {
   }
 
   @Post('create')
-  async createUser(@Body() body): Promise<ControllerResponse<UserRecord>> {
+  async createUser(@Body() body): Promise<ControllerResponse<IUserRecord>> {
     try {
       const userToCreate = await validatePayload(CreateUserDTO, body);
       const result = await this.userService.createUser(userToCreate);

@@ -6,10 +6,11 @@ import {
   SuccessResponse,
   validatePayload,
 } from 'src/utils/response';
-import { OrderRecord, OrderRecordWithProducts } from 'src/modules/datasource';
 import { CreateOrderDTO, UpdateOrderDTO } from '../types';
 import { LoggingService } from 'src/modules/logging';
 import { ControllerError } from 'src/types';
+import { IOrderWithRelations } from 'packages/tbh-shared-types/dist';
+import { IOrderRecord } from 'tbh-shared-types';
 
 @Controller('order')
 export class OrderController {
@@ -21,7 +22,7 @@ export class OrderController {
   @Post('create')
   async createOrder(
     @Body() body,
-  ): Promise<ControllerResponse<OrderRecordWithProducts>> {
+  ): Promise<ControllerResponse<IOrderWithRelations>> {
     try {
       const orderPayload = await validatePayload(CreateOrderDTO, body);
       const order =
@@ -35,7 +36,7 @@ export class OrderController {
   @Get(':orderId')
   async getOrderWithProducts(
     @Param('orderId') orderId: string,
-  ): Promise<ControllerResponse<OrderRecordWithProducts>> {
+  ): Promise<ControllerResponse<IOrderWithRelations>> {
     try {
       if (!orderId) {
         throw new ControllerError('Validation Failed', 'Order ID is required');
@@ -49,7 +50,7 @@ export class OrderController {
   }
 
   @Put('update')
-  async updateOrder(@Body() body): Promise<ControllerResponse<OrderRecord>> {
+  async updateOrder(@Body() body): Promise<ControllerResponse<IOrderRecord>> {
     try {
       const updateOrderPayload = await validatePayload(UpdateOrderDTO, body);
       const updated =

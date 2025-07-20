@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import * as schema from '../schema/schema';
 import { DataSourceClient } from '../DataSourceClient';
 import { NeonHttpDatabase } from 'drizzle-orm/neon-http';
-import { AddressRecord, AddressToCreate } from '../types/address';
+import { IAddressRecord, ICreateAddress } from 'tbh-shared-types';
 
 @Injectable()
 export class AddressRepository {
@@ -11,7 +11,7 @@ export class AddressRepository {
     this.client = this.datasource.getClient();
   }
 
-  async createAddress(data: AddressToCreate): Promise<AddressRecord> {
+  async createAddress(data: ICreateAddress): Promise<IAddressRecord> {
     const result = await this.client
       .insert(schema.addressTable)
       .values(data)

@@ -1,6 +1,6 @@
 {
   "name": "tbh-shared-types",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Shared types for TBH project",
   "main": "dist/index.d.ts",
   "types": "dist/index.d.ts",
@@ -12,6 +12,7 @@
     "prepare": "npm run build"
   },
   "devDependencies": {
+    "@types/yargs": "^17.0.33",
     "typescript": "^5.4.5"
   },
   "publishConfig": {

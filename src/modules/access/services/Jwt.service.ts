@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from 'src/modules/config';
 import { JwtService as NestJwtService } from '@nestjs/jwt';
-import { UserRecord } from 'src/modules/datasource';
+import { IUserRecord } from 'tbh-shared-types';
 
 @Injectable()
 export class JwtService {
@@ -14,7 +14,7 @@ export class JwtService {
     this.secret = this.configService.getJwtSecret();
   }
 
-  signUserData(payload: UserRecord): { token: string; expiration: number } {
+  signUserData(payload: IUserRecord): { token: string; expiration: number } {
     const infoToSign = {
       fullName: `${payload.firstName} ${payload.lastName}`,
       emailAddress: payload.emailAddress,

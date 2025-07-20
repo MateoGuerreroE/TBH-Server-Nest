@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { NeonHttpDatabase } from 'drizzle-orm/neon-http';
 import { DataSourceClient } from '../DataSourceClient';
-import { CreateUserData, UpdateUserData, UserRecord } from '../types/access';
+import { IUserRecord, IUpdateUser, ICreateUser } from 'tbh-shared-types';
 import * as schema from '../schema/schema';
 import { eq } from 'drizzle-orm';
 
@@ -12,7 +12,7 @@ export class UserRepository {
     this.client = this.datasource.getClient();
   }
 
-  async getAllUsers(): Promise<UserRecord[]> {
+  async getAllUsers(): Promise<IUserRecord[]> {
     return this.client.query.userTable.findMany({
       with: {
         updater: {},
@@ -20,7 +20,7 @@ export class UserRepository {
     });
   }
 
-  async getUserById(userId: string): Promise<UserRecord | null> {
+  async getUserById(userId: string): Promise<IUserRecord | null> {
     return this.client.query.userTable.findFirst({
       where: (user, { eq }) => eq(user.userId, userId),
     });
@@ -28,13 +28,13 @@ export class UserRepository {
 
   async getUserByEmailAddress(
     emailAddress: string,
-  ): Promise<UserRecord | null> {
+  ): Promise<IUserRecord | null> {
     return this.client.query.userTable.findFirst({
       where: (user, { eq }) => eq(user.emailAddress, emailAddress),
     });
   }
 
-  async createUser(userToCreate: CreateUserData): Promise<UserRecord> {
+  async createUser(userToCreate: ICreateUser): Promise<IUserRecord> {
     const result = await this.client
       .insert(schema.userTable)
       .values(userToCreate)
@@ -42,7 +42,7 @@ export class UserRepository {
     return result[0];
   }
 
-  async updateUser(userToUpdate: UpdateUserData): Promise<string | null> {
+  async updateUser(userToUpdate: IUpdateUser): Promise<string | null> {
     const { userId, ...updates } = userToUpdate;
 
     const update = await this.client

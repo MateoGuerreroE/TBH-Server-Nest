@@ -2,15 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { NeonHttpDatabase } from 'drizzle-orm/neon-http';
 import * as schema from '../schema/schema';
 import { DataSourceClient } from '../DataSourceClient';
-import {
-  CreateOrderData,
-  CreateOrderItemData,
-  OrderRecord,
-  OrderRecordWithProducts,
-  OrderWithRelations,
-  UpdateOrderData,
-} from '../types';
 import { eq } from 'drizzle-orm';
+import {
+  ICreateOrderItem,
+  IOrderRecord,
+  IOrderWithRelations,
+  IUpdateOrder,
+} from 'tbh-shared-types';
+import { BaseCreateOrder } from '../types';
 
 @Injectable()
 export class OrderRepository {
@@ -19,13 +18,13 @@ export class OrderRepository {
     this.client = this.datasource.getClient();
   }
 
-  async getAllOrders(): Promise<OrderRecord[]> {
+  async getAllOrders(): Promise<IOrderRecord[]> {
     return this.client.query.orderTable.findMany({
       orderBy: (order, { desc }) => desc(order.orderDate),
     });
   }
 
-  async getOrderById(orderId: string): Promise<OrderRecord | null> {
+  async getOrderById(orderId: string): Promise<IOrderRecord | null> {
     return this.client.query.orderTable.findFirst({
       where: (order, { eq }) => eq(order.orderId, orderId),
     });
@@ -33,7 +32,7 @@ export class OrderRepository {
 
   async getOrderWithProducts(
     orderId: string,
-  ): Promise<OrderRecordWithProducts | null> {
+  ): Promise<IOrderWithRelations | null> {
     return this.client.query.orderTable.findFirst({
       where: (order, { eq }) => eq(order.orderId, orderId),
       with: {
@@ -48,7 +47,7 @@ export class OrderRepository {
 
   async getOrderWithRelations(
     orderId: string,
-  ): Promise<OrderWithRelations | null> {
+  ): Promise<IOrderWithRelations | null> {
     return this.client.query.orderTable.findFirst({
       where: (order, { eq }) => eq(order.orderId, orderId),
       with: {
@@ -65,7 +64,7 @@ export class OrderRepository {
     });
   }
 
-  async createOrder(data: CreateOrderData): Promise<OrderRecord> {
+  async createOrder(data: BaseCreateOrder): Promise<IOrderRecord> {
     const result = await this.client
       .insert(schema.orderTable)
       .values(data)
@@ -74,7 +73,7 @@ export class OrderRepository {
     return result[0];
   }
 
-  async updateOrder(data: UpdateOrderData): Promise<OrderRecord | null> {
+  async updateOrder(data: IUpdateOrder): Promise<IOrderRecord | null> {
     const { orderId, ...updateData } = data;
 
     const result = await this.client
@@ -90,7 +89,7 @@ export class OrderRepository {
     return result[0];
   }
 
-  async createOrderItems(products: CreateOrderItemData[]): Promise<void> {
+  async createOrderItems(products: ICreateOrderItem[]): Promise<void> {
     await this.client.insert(schema.orderItemTable).values(products);
   }
 }
