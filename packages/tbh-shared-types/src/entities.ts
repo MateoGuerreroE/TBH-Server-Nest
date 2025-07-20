@@ -73,6 +73,7 @@ export interface IOrderItemRecord {
 
 export interface IProductRecord {
   productId: string;
+  discountCampaignId: string | null;
   productName: string;
   productTags: string[];
   productPrice: string;

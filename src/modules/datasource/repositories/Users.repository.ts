@@ -15,7 +15,7 @@ export class UserRepository {
   async getAllUsers(): Promise<UserRecord[]> {
     return this.client.query.userTable.findMany({
       with: {
-        updatedBy: {},
+        updater: {},
       },
     });
   }
