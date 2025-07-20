@@ -2,19 +2,18 @@ import { Injectable } from '@nestjs/common';
 import { NeonHttpDatabase } from 'drizzle-orm/neon-http';
 import * as schema from '../schema/schema';
 import { DataSourceClient } from '../DataSourceClient';
-import {
-  CreateProductData,
-  ProductPublicFilters,
-  ProductRecord,
-  ProductTrend,
-  ProductWithSubCategory,
-  ProductWithSubCategoryAndCategory,
-  TrendUpdate,
-  UpdateProductAttributeData,
-  UpdateProductObjectData,
-} from '../types/products';
 import { eq, inArray, sql } from 'drizzle-orm';
 import { generateBatchSQL } from '../utils/utils';
+import {
+  ICreateProduct,
+  IProductPublicFilters,
+  IProductRecord,
+  IProductWithRelations,
+  ITrendRecord,
+  IUpdateProduct,
+  IUpdateProductOB,
+  IUpdateTrend,
+} from 'tbh-shared-types';
 
 @Injectable()
 export class ProductRepository {
@@ -23,7 +22,7 @@ export class ProductRepository {
     this.client = this.datasource.getClient();
   }
 
-  async getAllProduct(): Promise<ProductRecord[]> {
+  async getAllProduct(): Promise<IProductRecord[]> {
     return this.client.query.productTable.findMany({
       where: (product, { isNull }) => isNull(product.deletedAt),
       with: {
@@ -34,7 +33,7 @@ export class ProductRepository {
 
   async getAllProductsWithSubCategoryId(
     subCategoryId: string,
-  ): Promise<ProductWithSubCategory[]> {
+  ): Promise<IProductWithRelations[]> {
     return this.client.query.productTable.findMany({
       where: (product, { and, eq, isNull }) =>
         and(
@@ -49,7 +48,7 @@ export class ProductRepository {
 
   async getAllProductsFromCategoryId(
     categoryId: string,
-  ): Promise<ProductWithSubCategory[]> {
+  ): Promise<IProductWithRelations[]> {
     const subCategories = await this.client.query.subcategoryTable.findMany({
       where: (subcategory, { eq }) => eq(subcategory.categoryId, categoryId),
       with: {
@@ -71,7 +70,7 @@ export class ProductRepository {
 
   async getProductById(
     productId: string,
-  ): Promise<ProductWithSubCategoryAndCategory | null> {
+  ): Promise<IProductWithRelations | null> {
     return this.client.query.productTable.findFirst({
       where: eq(schema.productTable.productId, productId),
       with: {
@@ -84,20 +83,32 @@ export class ProductRepository {
     });
   }
 
-  async __createProducts(productData: CreateProductData[]): Promise<number> {
+  async __createProducts(productData: ICreateProduct[]): Promise<number> {
     const insertedProducts = await this.client
       .insert(schema.productTable)
-      .values(productData);
+      .values(
+        productData.map((data) => ({
+          ...data,
+          updatedBy: data.createdBy,
+          productPrice: String(data.productPrice),
+          discount: String(data.discount),
+        })),
+      );
 
     return insertedProducts.rowCount;
   }
 
   async createProductRecord(
-    productData: CreateProductData,
-  ): Promise<ProductRecord> {
+    productData: ICreateProduct,
+  ): Promise<IProductRecord> {
     const newProduct = await this.client
       .insert(schema.productTable)
-      .values(productData)
+      .values({
+        ...productData,
+        updatedBy: productData.createdBy,
+        productPrice: String(productData.productPrice),
+        discount: String(productData.discount),
+      })
       .returning();
 
     return this.client.query.productTable.findFirst({
@@ -109,8 +120,8 @@ export class ProductRepository {
   }
 
   async getFilteredProducts(
-    filters: ProductPublicFilters,
-  ): Promise<ProductWithSubCategory[]> {
+    filters: IProductPublicFilters,
+  ): Promise<IProductWithRelations[]> {
     console.log(`Applying filters: ${JSON.stringify(filters)}`);
     return this.client.query.productTable.findMany({
       where: (product, { and }) =>
@@ -139,10 +150,10 @@ export class ProductRepository {
   }
 
   async updateBatchProducts(
-    products: UpdateProductAttributeData[],
+    products: IUpdateProduct[],
     updatedBy: string,
   ): Promise<boolean> {
-    const batchSQL = generateBatchSQL<UpdateProductAttributeData>(
+    const batchSQL = generateBatchSQL<IUpdateProduct>(
       'products',
       'productId',
       products,
@@ -166,8 +177,8 @@ export class ProductRepository {
 
   async updateProductObjects(
     productId: string,
-    objects: UpdateProductObjectData,
-  ): Promise<ProductRecord | null> {
+    objects: IUpdateProductOB,
+  ): Promise<IProductRecord | null> {
     const updatedProduct = await this.client
       .update(schema.productTable)
       .set({ ...objects, updatedAt: new Date() })
@@ -208,10 +219,10 @@ export class ProductRepository {
   }
 
   async updateTrends(
-    trendUpdates: TrendUpdate[],
+    trendUpdates: IUpdateTrend[],
     updatedBy: string,
   ): Promise<boolean> {
-    const batchSQL = generateBatchSQL<TrendUpdate>(
+    const batchSQL = generateBatchSQL<IUpdateTrend>(
       'trends',
       'productId',
       trendUpdates,
@@ -222,7 +233,7 @@ export class ProductRepository {
     return !!updates.rowCount;
   }
 
-  async getTrendingProducts(): Promise<ProductTrend[]> {
+  async getTrendingProducts(): Promise<ITrendRecord[]> {
     return this.client.query.trendsTable.findMany({
       with: {
         product: {

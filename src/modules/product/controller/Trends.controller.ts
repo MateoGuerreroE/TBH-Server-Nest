@@ -7,8 +7,8 @@ import {
   SuccessResponse,
   validatePayload,
 } from 'src/utils/response';
-import { ProductTrend } from 'src/modules/datasource';
 import { UpdateTrendsBatchDTO } from '../types';
+import { ITrendRecord } from 'tbh-shared-types';
 
 @Controller('trends')
 export class TrendsController {
@@ -18,7 +18,7 @@ export class TrendsController {
   ) {}
 
   @Get()
-  async getAllTrends(): Promise<ControllerResponse<ProductTrend[]>> {
+  async getAllTrends(): Promise<ControllerResponse<ITrendRecord[]>> {
     try {
       const trends = await this.trendsService.getAllTrendProducts();
       return SuccessResponse.send(trends);

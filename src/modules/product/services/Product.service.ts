@@ -1,11 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { ProductRepository } from 'src/modules/datasource';
-import {
-  CreateProductData,
-  ProductFilters,
-  ProductRecord,
-  ProductWithSubCategory,
-} from 'src/modules/datasource/types/products';
 import { LoggingService } from 'src/modules/logging';
 import { BusinessError } from 'src/types';
 import {
@@ -14,6 +8,12 @@ import {
   UpdateProductObjDTO,
 } from '../types';
 import { filterProductResult } from '../utils/utils';
+import {
+  ICreateProduct,
+  IProductRecord,
+  IProductWithRelations,
+  ProductFilters,
+} from 'tbh-shared-types';
 
 @Injectable()
 export class ProductService {
@@ -22,15 +22,15 @@ export class ProductService {
     private readonly logger: LoggingService,
   ) {}
 
-  async getAllProducts(): Promise<ProductRecord[]> {
+  async getAllProducts(): Promise<IProductRecord[]> {
     this.logger.debug('Fetching all products');
     return this.productRepository.getAllProduct();
   }
 
   async getFilteredProducts(
     filters: ProductFilters,
-  ): Promise<ProductWithSubCategory[]> {
-    const result: ProductWithSubCategory[] = [];
+  ): Promise<IProductWithRelations[]> {
+    const result: IProductWithRelations[] = [];
 
     if (filters.categoryId || filters.subCategoryId) {
       const { categoryId, subCategoryId } = filters;
@@ -76,7 +76,7 @@ export class ProductService {
     return result;
   }
 
-  async getProductById(productId: string): Promise<ProductRecord> {
+  async getProductById(productId: string): Promise<IProductRecord> {
     this.logger.debug(`Fetching product with ID: ${productId}`);
     const product = await this.productRepository.getProductById(productId);
     if (!product) {
@@ -89,14 +89,13 @@ export class ProductService {
     return product;
   }
 
-  async createProduct(product: CreateProductDTO): Promise<ProductRecord> {
-    const productToCreate: CreateProductData = {
+  async createProduct(product: CreateProductDTO): Promise<IProductRecord> {
+    const productToCreate: ICreateProduct = {
       ...product,
-      updatedBy: product.createdBy,
       productTags: product.productTags || [],
-      productPrice: product.productPrice.toString(),
+      productPrice: product.productPrice,
       stock: product.stock || 0,
-      discount: product.discount ? product.discount.toString() : '0',
+      discount: product.discount ? product.discount : 0,
     };
 
     this.logger.debug(
@@ -188,9 +187,9 @@ export class ProductService {
           ...p,
           updatedBy: p.createdBy,
           productTags: p.productTags || [],
-          productPrice: p.productPrice.toString(),
+          productPrice: p.productPrice,
           stock: p.stock || 0,
-          discount: p.discount ? p.discount.toString() : '0',
+          discount: p.discount ? p.discount : 0,
         })),
       );
       console.log('HEY!');

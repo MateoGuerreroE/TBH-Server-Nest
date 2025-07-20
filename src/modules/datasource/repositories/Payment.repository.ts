@@ -2,13 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { DataSourceClient } from '../DataSourceClient';
 import { NeonHttpDatabase } from 'drizzle-orm/neon-http';
 import * as schema from '../schema/schema';
-import {
-  CreatePaymentData,
-  PaymentRecord,
-  PaymentWithOrder,
-  UpdatePaymentData,
-} from '../types/payment';
 import { eq } from 'drizzle-orm';
+import {
+  ICreatePayment,
+  IPaymentRecord,
+  IPaymentWithRelations,
+  IUpdatePayment,
+} from 'tbh-shared-types';
 
 @Injectable()
 export class PaymentRepository {
@@ -17,7 +17,7 @@ export class PaymentRepository {
     this.client = this.dataClient.getClient();
   }
 
-  async getPaymentById(paymentId: string): Promise<PaymentRecord | null> {
+  async getPaymentById(paymentId: string): Promise<IPaymentRecord | null> {
     return this.client.query.paymentTable.findFirst({
       where: (payment, { eq }) => eq(payment.paymentId, paymentId),
     });
@@ -25,7 +25,7 @@ export class PaymentRepository {
 
   async getPaymentWithOrder(
     paymentId: string,
-  ): Promise<PaymentWithOrder | null> {
+  ): Promise<IPaymentWithRelations | null> {
     return this.client.query.paymentTable.findFirst({
       where: (payment, { eq }) => eq(payment.paymentId, paymentId),
       with: {
@@ -44,7 +44,7 @@ export class PaymentRepository {
     });
   }
 
-  async createPayment(payment: CreatePaymentData): Promise<PaymentRecord> {
+  async createPayment(payment: ICreatePayment): Promise<IPaymentRecord> {
     const result = await this.client
       .insert(schema.paymentTable)
       .values(payment)
@@ -53,9 +53,7 @@ export class PaymentRepository {
     return result[0];
   }
 
-  async updatePayment(
-    payload: UpdatePaymentData,
-  ): Promise<PaymentRecord | null> {
+  async updatePayment(payload: IUpdatePayment): Promise<IPaymentRecord | null> {
     const { paymentId, ...updates } = payload;
 
     const update = await this.client

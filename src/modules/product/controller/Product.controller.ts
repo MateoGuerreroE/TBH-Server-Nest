@@ -8,7 +8,6 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { ProductFilters, ProductRecord } from 'src/modules/datasource';
 import {
   ControllerResponse,
   handleControllerError,
@@ -22,6 +21,8 @@ import {
   UpdateProductBatchDTO,
   UpdateProductObjDTO,
 } from '../types';
+import { IProductRecord } from 'packages/tbh-shared-types/dist';
+import { ProductFilters } from 'tbh-shared-types';
 
 @Controller('product')
 export class ProductController {
@@ -31,7 +32,7 @@ export class ProductController {
   ) {}
 
   @Get()
-  async getAllProducts(): Promise<ControllerResponse<ProductRecord[]>> {
+  async getAllProducts(): Promise<ControllerResponse<IProductRecord[]>> {
     const result = await this.productService.getAllProducts();
     return SuccessResponse.send(result);
   }
@@ -39,7 +40,7 @@ export class ProductController {
   @Get(':productId([0-9a-fA-F-]{36})')
   async getProductById(
     @Param() params: { productId: string },
-  ): Promise<ControllerResponse<ProductRecord>> {
+  ): Promise<ControllerResponse<IProductRecord>> {
     try {
       const result = await this.productService.getProductById(params.productId);
       return SuccessResponse.send(result);
@@ -51,7 +52,7 @@ export class ProductController {
   @Get('filter')
   async getFilteredProducts(
     @Query() filters: ProductFilters,
-  ): Promise<ControllerResponse<ProductRecord[]>> {
+  ): Promise<ControllerResponse<IProductRecord[]>> {
     try {
       const result = await this.productService.getFilteredProducts(filters);
       return SuccessResponse.send(result);
@@ -63,7 +64,7 @@ export class ProductController {
   @Post('create')
   async createProduct(
     @Body() product,
-  ): Promise<ControllerResponse<ProductRecord>> {
+  ): Promise<ControllerResponse<IProductRecord>> {
     try {
       const payload = await validatePayload(CreateProductDTO, product);
       const result = await this.productService.createProduct(payload);

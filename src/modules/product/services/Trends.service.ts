@@ -1,11 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import {
-  ProductRepository,
-  ProductTrend,
-  TrendUpdate,
-} from 'src/modules/datasource';
+import { ProductRepository } from 'src/modules/datasource';
 import { LoggingService } from 'src/modules/logging';
 import { BusinessError } from 'src/types';
+import { ITrendRecord, IUpdateTrend } from 'tbh-shared-types';
 
 @Injectable()
 export class TrendsService {
@@ -14,7 +11,7 @@ export class TrendsService {
     private readonly logger: LoggingService,
   ) {}
 
-  async getAllTrendProducts(): Promise<ProductTrend[]> {
+  async getAllTrendProducts(): Promise<ITrendRecord[]> {
     return this.trendsRepository.getTrendingProducts();
   }
 
@@ -35,7 +32,7 @@ export class TrendsService {
   }
 
   async updateTrendingProduct(
-    trendsToUpdate: TrendUpdate[],
+    trendsToUpdate: IUpdateTrend[],
     updatedBy: string,
   ): Promise<void> {
     try {

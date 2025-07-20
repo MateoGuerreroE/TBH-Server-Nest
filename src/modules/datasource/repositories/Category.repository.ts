@@ -2,14 +2,14 @@ import { Injectable } from '@nestjs/common';
 import * as schema from '../schema/schema';
 import { DataSourceClient } from '../DataSourceClient';
 import { NeonHttpDatabase } from 'drizzle-orm/neon-http';
-import {
-  CategoryRecord,
-  CategoryToCreate,
-  CategoryToUpdate,
-  CategoryWithProducts,
-} from '../types';
 import { eq, inArray, sql } from 'drizzle-orm';
 import { generateBatchSQL } from '../utils/utils';
+import {
+  ICategoryRecord,
+  ICategoryWithRelations,
+  ICreateCategory,
+  IUpdateCategory,
+} from 'tbh-shared-types';
 
 @Injectable()
 export class CategoryRepository {
@@ -18,7 +18,7 @@ export class CategoryRepository {
     this.client = this.datasource.getClient();
   }
 
-  async getAllCategories(): Promise<CategoryRecord[]> {
+  async getAllCategories(): Promise<ICategoryRecord[]> {
     return this.client.query.categoryTable.findMany({
       where: (category, { isNull }) => isNull(category.deletedAt),
       with: {
@@ -27,7 +27,7 @@ export class CategoryRepository {
     });
   }
 
-  async getInitialCategories(): Promise<CategoryWithProducts[]> {
+  async getInitialCategories(): Promise<ICategoryWithRelations[]> {
     return this.client.query.categoryTable.findMany({
       where: (category, { isNull }) => isNull(category.deletedAt),
       with: {
@@ -43,7 +43,7 @@ export class CategoryRepository {
     });
   }
 
-  async getCategoryById(categoryId: string): Promise<CategoryRecord | null> {
+  async getCategoryById(categoryId: string): Promise<ICategoryRecord | null> {
     const result = await this.client.query.categoryTable.findFirst({
       where: eq(schema.categoryTable.categoryId, categoryId),
       with: {
@@ -54,7 +54,7 @@ export class CategoryRepository {
     return result ?? null;
   }
 
-  async createCategory(data: CategoryToCreate): Promise<CategoryRecord> {
+  async createCategory(data: ICreateCategory): Promise<ICategoryRecord> {
     const result = await this.client
       .insert(schema.categoryTable)
       .values({
@@ -67,10 +67,10 @@ export class CategoryRepository {
   }
 
   async updateBatchCategories(
-    data: CategoryToUpdate[],
+    data: IUpdateCategory[],
     updatedBy: string,
   ): Promise<boolean> {
-    const batchSQL = generateBatchSQL<CategoryToUpdate>(
+    const batchSQL = generateBatchSQL<IUpdateCategory>(
       'categories',
       'categoryId',
       data,

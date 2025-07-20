@@ -1,10 +1,6 @@
 import { PaymentRepository } from 'src/modules/datasource/repositories/Payment.repository';
 import { LoggingService } from 'src/modules/logging';
 import { ProcessPaymentDTO, UpdateOrderDTO } from '../types';
-import {
-  PaymentRecord,
-  PaymentWithOrder,
-} from 'src/modules/datasource/types/payment';
 import { Injectable } from '@nestjs/common';
 import { BusinessError } from 'src/types';
 import { MercadoLibreService } from './MercadoLibre.service';
@@ -12,7 +8,11 @@ import { OrderManagementService } from './OrderManagement.service';
 import { validatePayload } from 'src/utils/response';
 import { UserService } from 'src/modules/access';
 import { AddressRepository } from 'src/modules/datasource';
-import { IOrderRecord } from 'tbh-shared-types';
+import {
+  IOrderRecord,
+  IPaymentRecord,
+  IPaymentWithRelations,
+} from 'tbh-shared-types';
 
 @Injectable()
 export class PaymentService {
@@ -25,7 +25,7 @@ export class PaymentService {
     private readonly addressRepository: AddressRepository,
   ) {}
 
-  async getPaymentById(paymentId: string): Promise<PaymentWithOrder> {
+  async getPaymentById(paymentId: string): Promise<IPaymentWithRelations> {
     const payment = await this.paymentRepository.getPaymentWithOrder(paymentId);
     if (!payment) {
       throw new BusinessError(
@@ -36,7 +36,7 @@ export class PaymentService {
     return payment;
   }
 
-  async processPayment(data: ProcessPaymentDTO): Promise<PaymentRecord> {
+  async processPayment(data: ProcessPaymentDTO): Promise<IPaymentRecord> {
     try {
       const { payment, orderId, shipping, addressId } = data;
       const order =

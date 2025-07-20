@@ -1,11 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import {
-  SubCategoryRecord,
-  SubCategoryRepository,
-} from 'src/modules/datasource';
+import { SubCategoryRepository } from 'src/modules/datasource';
 import { LoggingService } from 'src/modules/logging';
 import { CreateSubCategoryDTO, UpdateSubCategoryBatchDTO } from '../types';
 import { BusinessError } from 'src/types';
+import { ISubcategoryRecord } from 'tbh-shared-types';
 
 @Injectable()
 export class SubCategoryService {
@@ -21,7 +19,7 @@ export class SubCategoryService {
 
   async createSubCategory(
     data: CreateSubCategoryDTO,
-  ): Promise<SubCategoryRecord> {
+  ): Promise<ISubcategoryRecord> {
     this.logger.debug(`Creating subcategory`);
     const subCategory = await this.subCategoryRepo.createSubcategory(data);
     this.logger.debug(

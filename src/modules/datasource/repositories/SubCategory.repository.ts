@@ -2,13 +2,13 @@ import { Injectable } from '@nestjs/common';
 import * as schema from '../schema/schema';
 import { DataSourceClient } from '../DataSourceClient';
 import { NeonHttpDatabase } from 'drizzle-orm/neon-http';
-import {
-  SubCategoryRecord,
-  SubCategoryToCreate,
-  SubCategoryToUpdate,
-} from '../types';
 import { eq, inArray, sql } from 'drizzle-orm';
 import { generateBatchSQL } from '../utils/utils';
+import {
+  ICreateSubCategory,
+  ISubcategoryRecord,
+  IUpdateSubCategory,
+} from 'tbh-shared-types';
 
 @Injectable()
 export class SubCategoryRepository {
@@ -17,7 +17,7 @@ export class SubCategoryRepository {
     this.client = this.datasource.getClient();
   }
 
-  async getAllSubcategories(): Promise<SubCategoryRecord[]> {
+  async getAllSubcategories(): Promise<ISubcategoryRecord[]> {
     return this.client.query.subcategoryTable.findMany({
       where: (subCategory, { isNull }) => isNull(subCategory.deletedAt),
       with: {
@@ -28,7 +28,7 @@ export class SubCategoryRepository {
 
   async getSubCategoryById(
     subCategoryId: string,
-  ): Promise<SubCategoryRecord | null> {
+  ): Promise<ISubcategoryRecord | null> {
     const result = await this.client.query.subcategoryTable.findFirst({
       where: eq(schema.subcategoryTable.subCategoryId, subCategoryId),
       with: {
@@ -40,8 +40,8 @@ export class SubCategoryRepository {
   }
 
   async createSubcategory(
-    data: SubCategoryToCreate,
-  ): Promise<SubCategoryRecord> {
+    data: ICreateSubCategory,
+  ): Promise<ISubcategoryRecord> {
     const result = await this.client
       .insert(schema.subcategoryTable)
       .values({
@@ -54,12 +54,12 @@ export class SubCategoryRepository {
   }
 
   async updateBatchSubcategories(
-    data: SubCategoryToUpdate[],
+    data: Omit<IUpdateSubCategory, 'updatedBy'>[],
     updatedBy: string,
   ): Promise<boolean> {
-    const batchSQL = generateBatchSQL<SubCategoryToUpdate>(
-      'categories',
-      'categoryId',
+    const batchSQL = generateBatchSQL<Omit<IUpdateSubCategory, 'updatedBy'>>(
+      'subcategories',
+      'subCategoryId',
       data,
       updatedBy,
     );

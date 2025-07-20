@@ -10,7 +10,7 @@ import {
   IsUUID,
   ValidateNested,
 } from 'class-validator';
-import { CategoryToUpdate, ImageType, VideoType } from 'src/modules/datasource';
+import { IUpdateCategory, ImageType, VideoType } from 'tbh-shared-types';
 
 export class CreateProductDTO {
   @IsUUID()
@@ -166,7 +166,7 @@ export class UpdateProductObjDTO {
 export class CategoryBatchUpdateDTO {
   @IsArray()
   @ArrayMinSize(1)
-  categoriesToUpdate: CategoryToUpdate[];
+  categoriesToUpdate: IUpdateCategory[];
 
   @IsUUID()
   updatedBy: string;

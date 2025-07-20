@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import {
-  CategoryRecord,
-  CategoryRepository,
-  CategoryToCreate,
-  CategoryToUpdate,
-  CategoryWithProducts,
-} from '../../datasource';
+import { CategoryRepository } from '../../datasource';
 import { LoggingService } from 'src/modules/logging';
 import { BusinessError } from 'src/types';
+import {
+  ICategoryRecord,
+  ICategoryWithRelations,
+  ICreateCategory,
+  IUpdateCategory,
+} from 'tbh-shared-types';
 
 @Injectable()
 export class CategoryService {
@@ -16,14 +16,14 @@ export class CategoryService {
     private readonly logger: LoggingService,
   ) {}
 
-  async getAllCategories(): Promise<CategoryRecord[]> {
+  async getAllCategories(): Promise<ICategoryRecord[]> {
     this.logger.debug(`Fetching all categories`);
     const categories = await this.categoryRepository.getAllCategories();
     this.logger.debug(`Found ${categories.length} categories`);
     return categories;
   }
 
-  async getInitialCategories(): Promise<CategoryWithProducts[]> {
+  async getInitialCategories(): Promise<ICategoryWithRelations[]> {
     this.logger.debug(`Fetching initial categories with products`);
     const categories = await this.categoryRepository.getInitialCategories();
     this.logger.debug(`Found ${categories.length} initial categories`);
@@ -31,7 +31,7 @@ export class CategoryService {
   }
 
   async updateCategoryBatch(
-    data: CategoryToUpdate[],
+    data: IUpdateCategory[],
     updatedBy: string,
   ): Promise<boolean> {
     this.logger.debug(`Attempting to update ${data.length} categories`);
@@ -49,7 +49,7 @@ export class CategoryService {
     return this.categoryRepository.updateBatchCategories(data, updatedBy);
   }
 
-  async createCategory(data: CategoryToCreate): Promise<CategoryRecord> {
+  async createCategory(data: ICreateCategory): Promise<ICategoryRecord> {
     this.logger.debug(`Params: ${JSON.stringify(data)}`);
     // const admin = await this.
     return this.categoryRepository.createCategory(data);

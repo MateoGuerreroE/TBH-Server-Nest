@@ -11,7 +11,7 @@ import {
   integer,
 } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
-import { ImageType, VideoType } from '../types';
+import { ImageType, VideoType } from 'tbh-shared-types';
 
 // Access
 export const userTable = pgTable('users', {

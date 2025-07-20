@@ -7,8 +7,8 @@ import {
   SuccessResponse,
   validatePayload,
 } from 'src/utils/response';
-import { SubCategoryRecord } from 'src/modules/datasource';
 import { CreateSubCategoryDTO, UpdateSubCategoryBatchDTO } from '../types';
+import { ISubcategoryRecord } from 'tbh-shared-types';
 
 @Controller('subCategory')
 export class SubCategoryController {
@@ -18,7 +18,7 @@ export class SubCategoryController {
   ) {}
 
   @Get()
-  async getSubCategories(): Promise<ControllerResponse<SubCategoryRecord[]>> {
+  async getSubCategories(): Promise<ControllerResponse<ISubcategoryRecord[]>> {
     try {
       const result = await this.subCategoryService.getAllSubCategories();
       return SuccessResponse.send(result);
@@ -30,7 +30,7 @@ export class SubCategoryController {
   @Post('create')
   async createSubCategory(
     @Body() body,
-  ): Promise<ControllerResponse<SubCategoryRecord>> {
+  ): Promise<ControllerResponse<ISubcategoryRecord>> {
     try {
       const payload = await validatePayload(CreateSubCategoryDTO, body);
 

@@ -1,21 +1,18 @@
-import {
-  ProductPublicFilters,
-  ProductWithSubCategory,
-} from 'src/modules/datasource';
+import { IProductPublicFilters, IProductWithRelations } from 'tbh-shared-types';
 
 export function filterProductResult(
-  productList: ProductWithSubCategory[],
-  filters: ProductPublicFilters,
-): ProductWithSubCategory[] {
+  productList: IProductWithRelations[],
+  filters: IProductPublicFilters,
+): IProductWithRelations[] {
   const { keyword, minPrice, maxPrice } = filters;
   this.logger.debug(
     `Filtering products with keyword: ${keyword}, minPrice: ${maxPrice}, maxPrice: ${maxPrice}`,
   );
-  const result: ProductWithSubCategory[] = [];
+  const result: IProductWithRelations[] = [];
 
   if (keyword) {
     const keywordLower = keyword.toLowerCase();
-    const matchesKeyword = (product: ProductWithSubCategory) => {
+    const matchesKeyword = (product: IProductWithRelations) => {
       return (
         product.productName.toLowerCase().includes(keywordLower) ||
         product.productDescription.short.toLowerCase().includes(keywordLower) ||

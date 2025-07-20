@@ -8,7 +8,7 @@ import {
 } from 'src/utils/response';
 import { LoggingService } from 'src/modules/logging';
 import { CategoryBatchUpdateDTO, CreateCategoryDTO } from '../types';
-import { CategoryRecord } from 'src/modules/datasource';
+import { ICategoryRecord } from 'tbh-shared-types';
 
 @Controller('category')
 export class CategoryController {
@@ -18,7 +18,7 @@ export class CategoryController {
   ) {}
 
   @Get()
-  async getAllCategories(): Promise<ControllerResponse<CategoryRecord[]>> {
+  async getAllCategories(): Promise<ControllerResponse<ICategoryRecord[]>> {
     try {
       const categories = await this.categoryService.getAllCategories();
       return SuccessResponse.send(categories);
@@ -28,7 +28,7 @@ export class CategoryController {
   }
 
   @Get('initial')
-  async getInitialCategories(): Promise<ControllerResponse<CategoryRecord[]>> {
+  async getInitialCategories(): Promise<ControllerResponse<ICategoryRecord[]>> {
     try {
       const categories = await this.categoryService.getInitialCategories();
       return SuccessResponse.send(categories);
@@ -40,7 +40,7 @@ export class CategoryController {
   @Post('create')
   async createCategory(
     @Body() data,
-  ): Promise<ControllerResponse<CategoryRecord>> {
+  ): Promise<ControllerResponse<ICategoryRecord>> {
     try {
       const payload = await validatePayload(CreateCategoryDTO, data);
       const categoryCreated =

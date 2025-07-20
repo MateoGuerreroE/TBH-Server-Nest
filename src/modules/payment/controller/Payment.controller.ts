@@ -7,9 +7,9 @@ import {
   SuccessResponse,
   validatePayload,
 } from 'src/utils/response';
-import { PaymentRecord } from 'src/modules/datasource/types/payment';
 import { ProcessPaymentDTO } from '../types';
 import { ControllerError } from 'src/types';
+import { IPaymentRecord } from 'tbh-shared-types';
 
 @Controller('payment')
 export class PaymentController {
@@ -21,7 +21,7 @@ export class PaymentController {
   @Post('process')
   async processPayment(
     @Body() body,
-  ): Promise<ControllerResponse<PaymentRecord>> {
+  ): Promise<ControllerResponse<IPaymentRecord>> {
     try {
       const payload = await validatePayload(ProcessPaymentDTO, body);
       const paymentResult = await this.paymentService.processPayment(payload);
@@ -34,7 +34,7 @@ export class PaymentController {
   @Get(':paymentId')
   async getPaymentById(
     @Param('paymentId') paymentId: string,
-  ): Promise<ControllerResponse<PaymentRecord>> {
+  ): Promise<ControllerResponse<IPaymentRecord>> {
     try {
       if (!paymentId) {
         throw new ControllerError(
