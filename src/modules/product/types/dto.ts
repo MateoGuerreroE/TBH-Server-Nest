@@ -44,6 +44,31 @@ export class CreateProductDTO {
   productTags?: string[];
 }
 
+export class UpdateTrendsBatchDTO {
+  @IsArray()
+  @ArrayMinSize(1)
+  productsToUpdate: UpdateTrendDTO[];
+
+  @IsUUID()
+  updatedBy: string;
+}
+
+export class UpdateTrendDTO {
+  @IsUUID()
+  productId: string;
+
+  @IsOptional()
+  @IsBoolean()
+  isTrending?: boolean;
+
+  @IsOptional()
+  @IsNumber({ maxDecimalPlaces: 2 })
+  trendScore?: number;
+
+  @IsUUID()
+  updatedBy: string;
+}
+
 export class UpdateProductBatchDTO {
   @IsArray()
   @ArrayMinSize(1)

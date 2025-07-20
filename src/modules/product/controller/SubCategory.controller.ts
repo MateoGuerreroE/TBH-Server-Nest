@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { SubCategoryService } from '../services/SubCategory.service';
 import { LoggingService } from 'src/modules/logging';
 import {
@@ -51,6 +51,21 @@ export class SubCategoryController {
       const result =
         await this.subCategoryService.updateSubCategoryBatch(payload);
 
+      return SuccessResponse.send(result);
+    } catch (error) {
+      return handleControllerError(error, this.logger);
+    }
+  }
+
+  @Delete(':subCategoryId')
+  async deleteSubCategory(
+    @Param('subCategoryId') subCategoryId: string,
+  ): Promise<ControllerResponse<boolean>> {
+    try {
+      const result = await this.subCategoryService.deleteSubCategory(
+        subCategoryId,
+        'e7bc3690-48ee-424f-9ce3-2572372bdb66', //! CHANGE FOR JWT WHEN IMPLEMENTED
+      );
       return SuccessResponse.send(result);
     } catch (error) {
       return handleControllerError(error, this.logger);

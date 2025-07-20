@@ -1,9 +1,10 @@
-import type { PaymentCreateRequest } from 'mercadopago/dist/clients/payment/create/types';
-import { Card } from 'mercadopago/dist/clients/payment/commonTypes';
-
+/**
+ * External payment response from ML API
+ * This is poorly defined as It's used mostly for storing and type discovery
+ */
 export interface ExternalPaymentResponse {
   id: number;
-  card: Card;
+  card: any;
   order: Record<string, unknown>;
   payer: {
     id: string;
@@ -66,4 +67,38 @@ export interface ExternalPaymentResponse {
   transaction_amount: number;
 }
 
-export type ExternalPaymentData = PaymentCreateRequest;
+/**
+ * Copied from mercadopago@2.7.0 npm package
+ *
+ * Since this would be consumed by client too, It's best to create a type copy here
+ * for just the needed types.
+ */
+export declare type PaymentCreateRequest = {
+  additional_info?: any;
+  application_fee?: number;
+  binary_mode?: boolean;
+  callback_url?: string;
+  campaign_id?: string;
+  capture?: boolean;
+  coupon_amount?: number;
+  coupon_code?: string;
+  date_of_expiration?: string;
+  description?: string;
+  differential_pricing_id?: number;
+  external_reference?: string;
+  installments?: number;
+  issuer_id?: number;
+  metadata?: any;
+  notification_url?: string;
+  payment_method_id?: string;
+  payment_method?: any;
+  statement_descriptor?: string;
+  token?: string;
+  transaction_amount?: number;
+  three_d_secure_mode?: string;
+  payer?: any;
+  forward_data?: any;
+  point_of_interaction?: any;
+  sponsor_id?: number;
+  transaction_details?: any;
+};

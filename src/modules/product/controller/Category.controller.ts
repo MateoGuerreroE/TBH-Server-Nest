@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { CategoryService } from '../services';
 import {
   ControllerResponse,
@@ -27,6 +27,16 @@ export class CategoryController {
     }
   }
 
+  @Get('initial')
+  async getInitialCategories(): Promise<ControllerResponse<CategoryRecord[]>> {
+    try {
+      const categories = await this.categoryService.getInitialCategories();
+      return SuccessResponse.send(categories);
+    } catch (error) {
+      return handleControllerError(error, this.logger);
+    }
+  }
+
   @Post('create')
   async createCategory(
     @Body() data,
@@ -42,7 +52,7 @@ export class CategoryController {
     }
   }
 
-  @Post('batchUpdate')
+  @Post('updateBatch')
   async updateCategoryBatch(
     @Body() data,
   ): Promise<ControllerResponse<boolean>> {
@@ -53,6 +63,22 @@ export class CategoryController {
         payload.updatedBy,
       );
 
+      return SuccessResponse.send(result);
+    } catch (error) {
+      return handleControllerError(error, this.logger);
+    }
+  }
+
+  @Delete(':categoryId')
+  async deleteCategory(
+    @Param() params: { categoryId: string },
+  ): Promise<ControllerResponse<boolean>> {
+    try {
+      this.logger.debug(`Deleting category with ID: ${params.categoryId}`);
+      const result = await this.categoryService.deleteCategory(
+        params.categoryId,
+        'e7bc3690-48ee-424f-9ce3-2572372bdb66', // TODO: Replace with JWT user ID
+      );
       return SuccessResponse.send(result);
     } catch (error) {
       return handleControllerError(error, this.logger);

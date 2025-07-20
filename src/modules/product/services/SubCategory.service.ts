@@ -50,4 +50,32 @@ export class SubCategoryService {
       data.updatedBy,
     );
   }
+
+  async deleteSubCategory(
+    subCategoryId: string,
+    deletedBy: string,
+  ): Promise<boolean> {
+    try {
+      this.logger.debug(`Deleting subcategory with ID: ${subCategoryId}`);
+      const subCategory =
+        await this.subCategoryRepo.getSubCategoryById(subCategoryId);
+
+      if (!subCategory) {
+        this.logger.error(`Sub Category with ID ${subCategory} does not exist`);
+
+        throw new Error('Subcategory not found');
+      }
+      const result = await this.subCategoryRepo.deleteSubCategory(
+        subCategoryId,
+        deletedBy,
+      );
+
+      return result;
+    } catch (e) {
+      throw new BusinessError(
+        'Unable to delete category',
+        (e as Error).message,
+      );
+    }
+  }
 }

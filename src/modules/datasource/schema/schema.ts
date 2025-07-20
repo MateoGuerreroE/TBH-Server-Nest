@@ -59,7 +59,7 @@ export const adminTable = pgTable('admins', {
 });
 
 export const userRelations = relations(userTable, ({ one, many }) => ({
-  updatedBy: one(adminTable, {
+  updater: one(adminTable, {
     fields: [userTable.updatedBy],
     references: [adminTable.adminId],
   }),
@@ -118,6 +118,33 @@ export const productTable = pgTable('products', {
     .references(() => subcategoryTable.subCategoryId, { onDelete: 'cascade' })
     .notNull(),
 });
+
+export const trendsTable = pgTable('trends', {
+  trendId: uuid().primaryKey().defaultRandom(),
+  productId: uuid()
+    .unique()
+    .references(() => productTable.productId, { onDelete: 'cascade' })
+    .notNull(),
+  isVisibleOnGrid: boolean().notNull().default(false),
+  isVisibleOnCarousel: boolean().notNull().default(false),
+  trendDiscount: numeric({ precision: 5, scale: 2 }).default(null),
+  addedAt: timestamp({ mode: 'date' }).notNull().defaultNow(),
+  updatedAt: timestamp({ mode: 'date' }).notNull().defaultNow(),
+  createdBy: uuid().references(() => adminTable.adminId, {
+    onDelete: 'set null',
+  }),
+});
+
+export const trendsRelations = relations(trendsTable, ({ one }) => ({
+  product: one(productTable, {
+    fields: [trendsTable.productId],
+    references: [productTable.productId],
+  }),
+  admin: one(adminTable, {
+    fields: [trendsTable.createdBy],
+    references: [adminTable.adminId],
+  }),
+}));
 
 export const categoryTable = pgTable('categories', {
   categoryId: uuid().primaryKey().defaultRandom(),

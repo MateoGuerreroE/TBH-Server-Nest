@@ -1,0 +1,20 @@
+{
+  "name": "tbh-shared-types",
+  "version": "1.0.0",
+  "description": "Shared types for TBH project",
+  "main": "dist/index.d.ts",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "prepare": "npm run build"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

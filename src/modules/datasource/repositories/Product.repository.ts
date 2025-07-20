@@ -6,8 +6,10 @@ import {
   CreateProductData,
   ProductPublicFilters,
   ProductRecord,
+  ProductTrend,
   ProductWithSubCategory,
   ProductWithSubCategoryAndCategory,
+  TrendUpdate,
   UpdateProductAttributeData,
   UpdateProductObjectData,
 } from '../types/products';
@@ -187,5 +189,59 @@ export class ProductRepository {
       .returning();
 
     return;
+  }
+
+  // Trends
+  async addProductTrend(productId: string, createdBy: string): Promise<void> {
+    await this.client.insert(schema.trendsTable).values({
+      productId,
+      createdBy,
+    });
+  }
+
+  async removeProductTrend(productId: string): Promise<boolean> {
+    const result = await this.client
+      .delete(schema.trendsTable)
+      .where(eq(schema.trendsTable.productId, productId));
+
+    return result.rowCount > 0;
+  }
+
+  async updateTrends(
+    trendUpdates: TrendUpdate[],
+    updatedBy: string,
+  ): Promise<boolean> {
+    const batchSQL = generateBatchSQL<TrendUpdate>(
+      'trends',
+      'productId',
+      trendUpdates,
+      updatedBy,
+    );
+
+    const updates = await this.client.execute(batchSQL);
+    return !!updates.rowCount;
+  }
+
+  async getTrendingProducts(): Promise<ProductTrend[]> {
+    return this.client.query.trendsTable.findMany({
+      with: {
+        product: {
+          with: {
+            subCategory: true,
+          },
+        },
+      },
+    });
+  }
+
+  async verifyTrendProductsExist(productIds: string[]): Promise<number> {
+    const countResult = await this.client
+      .select({
+        count: sql<number>`count(*)`,
+      })
+      .from(schema.trendsTable)
+      .where(inArray(schema.trendsTable.productId, productIds));
+
+    return Number(countResult[0]?.count ?? 0);
   }
 }

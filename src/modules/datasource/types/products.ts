@@ -48,6 +48,10 @@ export interface CategoryRecord {
   isEnabled: boolean;
 }
 
+export interface CategoryWithProducts extends CategoryRecord {
+  subCategories: SubCategoryWithProducts[];
+}
+
 export interface CategoryToCreate {
   categoryName: string;
   createdBy: string;
@@ -163,4 +167,22 @@ export interface SubCategoryToUpdate {
   subCategoryName?: string;
   isEnabled?: boolean;
   categoryId?: string;
+}
+
+export interface TrendUpdate {
+  productId: string;
+  isVisibleOnGrid?: boolean;
+  isVisibleOnCarousel?: boolean;
+}
+
+export interface ProductTrend {
+  trendId: string;
+  productId: string;
+  isVisibleOnGrid: boolean;
+  isVisibleOnCarousel: boolean;
+  trendDiscount: string;
+  addedAt: Date;
+  updatedAt: Date;
+  createdBy: string;
+  product: ProductRecord;
 }

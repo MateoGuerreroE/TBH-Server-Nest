@@ -2,7 +2,12 @@ import { Injectable } from '@nestjs/common';
 import * as schema from '../schema/schema';
 import { DataSourceClient } from '../DataSourceClient';
 import { NeonHttpDatabase } from 'drizzle-orm/neon-http';
-import { CategoryRecord, CategoryToCreate, CategoryToUpdate } from '../types';
+import {
+  CategoryRecord,
+  CategoryToCreate,
+  CategoryToUpdate,
+  CategoryWithProducts,
+} from '../types';
 import { eq, inArray, sql } from 'drizzle-orm';
 import { generateBatchSQL } from '../utils/utils';
 
@@ -15,10 +20,38 @@ export class CategoryRepository {
 
   async getAllCategories(): Promise<CategoryRecord[]> {
     return this.client.query.categoryTable.findMany({
+      where: (category, { isNull }) => isNull(category.deletedAt),
       with: {
         subCategories: {},
       },
     });
+  }
+
+  async getInitialCategories(): Promise<CategoryWithProducts[]> {
+    return this.client.query.categoryTable.findMany({
+      where: (category, { isNull }) => isNull(category.deletedAt),
+      with: {
+        subCategories: {
+          with: {
+            products: {
+              limit: 5,
+              orderBy: (product, { desc }) => desc(product.createdAt),
+            },
+          },
+        },
+      },
+    });
+  }
+
+  async getCategoryById(categoryId: string): Promise<CategoryRecord | null> {
+    const result = await this.client.query.categoryTable.findFirst({
+      where: eq(schema.categoryTable.categoryId, categoryId),
+      with: {
+        subCategories: {},
+      },
+    });
+
+    return result ?? null;
   }
 
   async createCategory(data: CategoryToCreate): Promise<CategoryRecord> {
@@ -54,7 +87,7 @@ export class CategoryRepository {
   ): Promise<boolean> {
     const result = await this.client
       .update(schema.categoryTable)
-      .set({ deletedAt: new Date(), updatedBy })
+      .set({ deletedAt: new Date(), updatedBy, isEnabled: false })
       .where(eq(schema.categoryTable.categoryId, categoryId));
 
     return !!result.rowCount;

@@ -4,8 +4,10 @@ import {
   CategoryRepository,
   CategoryToCreate,
   CategoryToUpdate,
+  CategoryWithProducts,
 } from '../../datasource';
 import { LoggingService } from 'src/modules/logging';
+import { BusinessError } from 'src/types';
 
 @Injectable()
 export class CategoryService {
@@ -18,6 +20,13 @@ export class CategoryService {
     this.logger.debug(`Fetching all categories`);
     const categories = await this.categoryRepository.getAllCategories();
     this.logger.debug(`Found ${categories.length} categories`);
+    return categories;
+  }
+
+  async getInitialCategories(): Promise<CategoryWithProducts[]> {
+    this.logger.debug(`Fetching initial categories with products`);
+    const categories = await this.categoryRepository.getInitialCategories();
+    this.logger.debug(`Found ${categories.length} initial categories`);
     return categories;
   }
 
@@ -44,5 +53,25 @@ export class CategoryService {
     this.logger.debug(`Params: ${JSON.stringify(data)}`);
     // const admin = await this.
     return this.categoryRepository.createCategory(data);
+  }
+
+  async deleteCategory(
+    categoryId: string,
+    deletedBy: string,
+  ): Promise<boolean> {
+    try {
+      this.logger.debug(`Deleting category with ID: ${categoryId}`);
+      const category =
+        await this.categoryRepository.getCategoryById(categoryId);
+
+      if (!category) {
+        this.logger.error(`Category with ID ${categoryId} does not exist`);
+        throw new Error(`Category not found`);
+      }
+      return this.categoryRepository.deleteCategory(categoryId, deletedBy);
+    } catch (error) {
+      this.logger.error(`Error deleting category: ${error.message}`);
+      throw new BusinessError('Failed to delete category', error.message);
+    }
   }
 }

@@ -19,10 +19,24 @@ export class SubCategoryRepository {
 
   async getAllSubcategories(): Promise<SubCategoryRecord[]> {
     return this.client.query.subcategoryTable.findMany({
+      where: (subCategory, { isNull }) => isNull(subCategory.deletedAt),
       with: {
         category: {},
       },
     });
+  }
+
+  async getSubCategoryById(
+    subCategoryId: string,
+  ): Promise<SubCategoryRecord | null> {
+    const result = await this.client.query.subcategoryTable.findFirst({
+      where: eq(schema.subcategoryTable.subCategoryId, subCategoryId),
+      with: {
+        category: {},
+      },
+    });
+
+    return result ?? null;
   }
 
   async createSubcategory(
