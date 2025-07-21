@@ -11,6 +11,7 @@ import { LoggingService } from 'src/modules/logging';
 import { ControllerError } from 'src/types';
 import { IOrderWithRelations } from 'packages/tbh-shared-types/dist';
 import { IOrderRecord } from 'tbh-shared-types';
+import { Auth } from 'src/modules/access/auth/discriminator';
 
 @Controller('order')
 export class OrderController {
@@ -19,6 +20,7 @@ export class OrderController {
     private readonly orderManagementService: OrderManagementService,
   ) {}
 
+  @Auth('visitor')
   @Post('create')
   async createOrder(
     @Body() body,
@@ -33,6 +35,7 @@ export class OrderController {
     }
   }
 
+  @Auth('visitor')
   @Get(':orderId')
   async getOrderWithProducts(
     @Param('orderId') orderId: string,
@@ -49,6 +52,7 @@ export class OrderController {
     }
   }
 
+  @Auth('visitor')
   @Put('update')
   async updateOrder(@Body() body): Promise<ControllerResponse<IOrderRecord>> {
     try {

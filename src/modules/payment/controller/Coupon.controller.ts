@@ -10,6 +10,7 @@ import { LoggingService } from 'src/modules/logging';
 import { CreateCouponDTO } from '../types';
 import { ControllerError } from 'src/types';
 import { ICouponRecord } from 'tbh-shared-types';
+import { Auth } from 'src/modules/access/auth/discriminator';
 
 @Controller('coupon')
 export class CouponController {
@@ -17,6 +18,8 @@ export class CouponController {
     private readonly couponService: CouponService,
     private readonly logger: LoggingService,
   ) {}
+
+  @Auth('admin')
   @Post('create')
   async createCoupon(@Body() body): Promise<ControllerResponse<ICouponRecord>> {
     try {
@@ -28,6 +31,7 @@ export class CouponController {
     }
   }
 
+  @Auth('visitor')
   @Get('validate')
   async validateCoupon(
     @Query('couponCode') couponCode: string,

@@ -10,6 +10,7 @@ import {
 import { ProcessPaymentDTO } from '../types';
 import { ControllerError } from 'src/types';
 import { IPaymentRecord } from 'tbh-shared-types';
+import { Auth } from 'src/modules/access/auth/discriminator';
 
 @Controller('payment')
 export class PaymentController {
@@ -18,6 +19,7 @@ export class PaymentController {
     private readonly logger: LoggingService,
   ) {}
 
+  @Auth('visitor')
   @Post('process')
   async processPayment(
     @Body() body,
@@ -31,6 +33,7 @@ export class PaymentController {
     }
   }
 
+  @Auth('visitor')
   @Get(':paymentId')
   async getPaymentById(
     @Param('paymentId') paymentId: string,
