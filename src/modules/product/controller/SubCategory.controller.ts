@@ -8,7 +8,13 @@ import {
   validatePayload,
 } from 'src/utils/response';
 import { CreateSubCategoryDTO, UpdateSubCategoryBatchDTO } from '../types';
-import { ISubcategoryRecord } from 'tbh-shared-types';
+import {
+  IAdminLoginData,
+  ISubcategoryRecord,
+  IUpdateSubCategory,
+} from 'tbh-shared-types';
+import { Auth } from 'src/modules/access/auth/discriminator';
+import { AdminAuthor } from 'src/modules/access/auth';
 
 @Controller('subCategory')
 export class SubCategoryController {
@@ -17,6 +23,7 @@ export class SubCategoryController {
     private readonly logger: LoggingService,
   ) {}
 
+  @Auth('visitor')
   @Get()
   async getSubCategories(): Promise<ControllerResponse<ISubcategoryRecord[]>> {
     try {
@@ -27,14 +34,19 @@ export class SubCategoryController {
     }
   }
 
+  @Auth('admin')
   @Post('create')
   async createSubCategory(
     @Body() body,
+    @AdminAuthor() admin: IAdminLoginData,
   ): Promise<ControllerResponse<ISubcategoryRecord>> {
     try {
       const payload = await validatePayload(CreateSubCategoryDTO, body);
 
-      const result = await this.subCategoryService.createSubCategory(payload);
+      const result = await this.subCategoryService.createSubCategory({
+        ...payload,
+        createdBy: admin.entityId,
+      });
 
       return SuccessResponse.send(result);
     } catch (error) {
@@ -42,14 +54,18 @@ export class SubCategoryController {
     }
   }
 
+  @Auth('admin')
   @Post('updateBatch')
   async updateBatchSubcategories(
     @Body() body,
+    @AdminAuthor() admin: IAdminLoginData,
   ): Promise<ControllerResponse<boolean>> {
     try {
       const payload = await validatePayload(UpdateSubCategoryBatchDTO, body);
-      const result =
-        await this.subCategoryService.updateSubCategoryBatch(payload);
+      const result = await this.subCategoryService.updateSubCategoryBatch({
+        updates: payload.subCategoriesToUpdate as IUpdateSubCategory[],
+        updatedBy: admin.entityId,
+      });
 
       return SuccessResponse.send(result);
     } catch (error) {
@@ -57,14 +73,16 @@ export class SubCategoryController {
     }
   }
 
+  @Auth('admin')
   @Delete(':subCategoryId')
   async deleteSubCategory(
     @Param('subCategoryId') subCategoryId: string,
+    @AdminAuthor() admin: IAdminLoginData,
   ): Promise<ControllerResponse<boolean>> {
     try {
       const result = await this.subCategoryService.deleteSubCategory(
         subCategoryId,
-        'e7bc3690-48ee-424f-9ce3-2572372bdb66', //! CHANGE FOR JWT WHEN IMPLEMENTED
+        admin.entityId,
       );
       return SuccessResponse.send(result);
     } catch (error) {

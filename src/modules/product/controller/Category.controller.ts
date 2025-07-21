@@ -8,7 +8,9 @@ import {
 } from 'src/utils/response';
 import { LoggingService } from 'src/modules/logging';
 import { CategoryBatchUpdateDTO, CreateCategoryDTO } from '../types';
-import { ICategoryRecord } from 'tbh-shared-types';
+import { IAdminLoginData, ICategoryRecord } from 'tbh-shared-types';
+import { Auth } from 'src/modules/access/auth/discriminator';
+import { AdminAuthor } from 'src/modules/access/auth';
 
 @Controller('category')
 export class CategoryController {
@@ -17,6 +19,7 @@ export class CategoryController {
     private readonly logger: LoggingService,
   ) {}
 
+  @Auth('visitor')
   @Get()
   async getAllCategories(): Promise<ControllerResponse<ICategoryRecord[]>> {
     try {
@@ -27,6 +30,7 @@ export class CategoryController {
     }
   }
 
+  @Auth('visitor')
   @Get('initial')
   async getInitialCategories(): Promise<ControllerResponse<ICategoryRecord[]>> {
     try {
@@ -37,14 +41,18 @@ export class CategoryController {
     }
   }
 
+  @Auth('admin')
   @Post('create')
   async createCategory(
     @Body() data,
+    @AdminAuthor() admin: IAdminLoginData,
   ): Promise<ControllerResponse<ICategoryRecord>> {
     try {
       const payload = await validatePayload(CreateCategoryDTO, data);
-      const categoryCreated =
-        await this.categoryService.createCategory(payload);
+      const categoryCreated = await this.categoryService.createCategory({
+        ...payload,
+        createdBy: admin.entityId,
+      });
 
       return SuccessResponse.send(categoryCreated);
     } catch (error) {
@@ -52,15 +60,17 @@ export class CategoryController {
     }
   }
 
+  @Auth('admin')
   @Post('updateBatch')
   async updateCategoryBatch(
     @Body() data,
+    @AdminAuthor() admin: IAdminLoginData,
   ): Promise<ControllerResponse<boolean>> {
     try {
       const payload = await validatePayload(CategoryBatchUpdateDTO, data);
       const result = await this.categoryService.updateCategoryBatch(
         payload.categoriesToUpdate,
-        payload.updatedBy,
+        admin.entityId,
       );
 
       return SuccessResponse.send(result);
@@ -69,15 +79,17 @@ export class CategoryController {
     }
   }
 
+  @Auth('admin')
   @Delete(':categoryId')
   async deleteCategory(
     @Param() params: { categoryId: string },
+    @AdminAuthor() admin: IAdminLoginData,
   ): Promise<ControllerResponse<boolean>> {
     try {
       this.logger.debug(`Deleting category with ID: ${params.categoryId}`);
       const result = await this.categoryService.deleteCategory(
         params.categoryId,
-        'e7bc3690-48ee-424f-9ce3-2572372bdb66', // TODO: Replace with JWT user ID
+        admin.entityId,
       );
       return SuccessResponse.send(result);
     } catch (error) {

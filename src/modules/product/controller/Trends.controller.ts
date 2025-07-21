@@ -8,7 +8,9 @@ import {
   validatePayload,
 } from 'src/utils/response';
 import { UpdateTrendsBatchDTO } from '../types';
-import { ITrendRecord } from 'tbh-shared-types';
+import { IAdminLoginData, ITrendRecord } from 'tbh-shared-types';
+import { Auth } from 'src/modules/access/auth/discriminator';
+import { AdminAuthor } from 'src/modules/access/auth';
 
 @Controller('trends')
 export class TrendsController {
@@ -17,6 +19,7 @@ export class TrendsController {
     private readonly logger: LoggingService,
   ) {}
 
+  @Auth('visitor')
   @Get()
   async getAllTrends(): Promise<ControllerResponse<ITrendRecord[]>> {
     try {
@@ -27,14 +30,16 @@ export class TrendsController {
     }
   }
 
+  @Auth('admin')
   @Post('add/:productId')
   async addProductToTrends(
     @Param('productId') productId: string,
+    @AdminAuthor() admin: IAdminLoginData,
   ): Promise<ControllerResponse<boolean>> {
     try {
       const result = await this.trendsService.addProductToTrends(
         productId,
-        'e7bc3690-48ee-424f-9ce3-2572372bdb66',
+        admin.entityId,
       );
       return SuccessResponse.send(result);
     } catch (error) {
@@ -42,9 +47,11 @@ export class TrendsController {
     }
   }
 
+  @Auth('admin')
   @Post('update')
   async updateTrends(
     @Body() trendsToUpdate,
+    @AdminAuthor() admin: IAdminLoginData,
   ): Promise<ControllerResponse<string>> {
     try {
       const payload = await validatePayload(
@@ -53,7 +60,7 @@ export class TrendsController {
       );
       await this.trendsService.updateTrendingProduct(
         payload.productsToUpdate,
-        payload.updatedBy,
+        admin.entityId,
       );
       return SuccessResponse.send('Success');
     } catch (e) {
@@ -61,6 +68,7 @@ export class TrendsController {
     }
   }
 
+  @Auth('admin')
   @Delete(':productId')
   async removeTrendingProduct(
     @Param('productId') productId: string,

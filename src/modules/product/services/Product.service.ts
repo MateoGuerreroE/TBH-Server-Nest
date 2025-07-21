@@ -2,11 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ProductRepository } from 'src/modules/datasource';
 import { LoggingService } from 'src/modules/logging';
 import { BusinessError } from 'src/types';
-import {
-  CreateProductDTO,
-  UpdateProductDTO,
-  UpdateProductObjDTO,
-} from '../types';
+import { UpdateProductDTO, UpdateProductObjDTO } from '../types';
 import { filterProductResult } from '../utils/utils';
 import {
   ICreateProduct,
@@ -89,7 +85,7 @@ export class ProductService {
     return product;
   }
 
-  async createProduct(product: CreateProductDTO): Promise<IProductRecord> {
+  async createProduct(product: ICreateProduct): Promise<IProductRecord> {
     const productToCreate: ICreateProduct = {
       ...product,
       productTags: product.productTags || [],
@@ -136,6 +132,7 @@ export class ProductService {
   async updateProductObjects(
     productId: string,
     objectsToUpdate: UpdateProductObjDTO,
+    updatedBy: string,
   ) {
     if (Object.keys(objectsToUpdate).length === 0) {
       this.logger.warn(`No objects to update for product ID: ${productId}`);
@@ -147,6 +144,7 @@ export class ProductService {
     const updates = await this.productRepository.updateProductObjects(
       productId,
       objectsToUpdate,
+      updatedBy,
     );
 
     if (!updates) {
@@ -160,7 +158,7 @@ export class ProductService {
     return true;
   }
 
-  async deleteProduct(productId: string): Promise<boolean> {
+  async deleteProduct(productId: string, deletedBy: string): Promise<boolean> {
     try {
       this.logger.debug(`Deleting product with ID: ${productId}`);
       const product = await this.productRepository.getProductById(productId);
@@ -171,7 +169,7 @@ export class ProductService {
           `Product with ID ${productId} does not exist`,
         );
       }
-      await this.productRepository.deleteProduct(productId);
+      await this.productRepository.deleteProduct(productId, deletedBy);
       return true;
     } catch (e) {
       this.logger.warn(`Unable to delete product: ${e.message}`);
@@ -179,20 +177,22 @@ export class ProductService {
     }
   }
 
-  async __devCreateProducts(products: CreateProductDTO[]): Promise<number> {
+  async __devCreateProducts(
+    products: Omit<ICreateProduct, 'createdBy'>[],
+  ): Promise<number> {
     this.logger.debug(`Creating multiple products in dev mode`);
     try {
       const result = await this.productRepository.__createProducts(
         products.map((p) => ({
           ...p,
-          updatedBy: p.createdBy,
           productTags: p.productTags || [],
           productPrice: p.productPrice,
           stock: p.stock || 0,
           discount: p.discount ? p.discount : 0,
+          createdBy: process.env.MASTER_ADMIN_ID,
+          updatedBy: process.env.MASTER_ADMIN_ID,
         })),
       );
-      console.log('HEY!');
       return result;
     } catch (e) {
       console.log(e);

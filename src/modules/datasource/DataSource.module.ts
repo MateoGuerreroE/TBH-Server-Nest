@@ -9,12 +9,14 @@ import {
   ProductRepository,
   CategoryRepository,
   SubCategoryRepository,
+  AdminRepository,
 } from './repositories';
 import { DataSourceClient } from './DataSourceClient';
 
 @Module({
   imports: [ConfigModule],
   providers: [
+    AdminRepository,
     SubCategoryRepository,
     ProductRepository,
     UserRepository,
@@ -26,6 +28,7 @@ import { DataSourceClient } from './DataSourceClient';
     CategoryRepository,
   ],
   exports: [
+    AdminRepository,
     SubCategoryRepository,
     ProductRepository,
     AddressRepository,

@@ -178,23 +178,24 @@ export class ProductRepository {
   async updateProductObjects(
     productId: string,
     objects: IUpdateProductOB,
+    updatedBy: string,
   ): Promise<IProductRecord | null> {
     const updatedProduct = await this.client
       .update(schema.productTable)
-      .set({ ...objects, updatedAt: new Date() })
+      .set({ ...objects, updatedAt: new Date(), updatedBy })
       .where(eq(schema.productTable.productId, productId))
       .returning();
 
     return updatedProduct[0] || null;
   }
 
-  async deleteProduct(productId: string, author?: string): Promise<void> {
+  async deleteProduct(productId: string, author: string): Promise<void> {
     await this.client
       .update(schema.productTable)
       .set({
         isActive: false,
         deletedAt: new Date(),
-        updatedBy: author ?? 'e7bc3690-48ee-424f-9ce3-2572372bdb66', //! TODO REMOVE THIS
+        updatedBy: author,
       })
       .where(eq(schema.productTable.productId, productId))
       .returning();

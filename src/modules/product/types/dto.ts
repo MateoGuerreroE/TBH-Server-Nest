@@ -13,9 +13,6 @@ import {
 import { IUpdateCategory, ImageType, VideoType } from 'tbh-shared-types';
 
 export class CreateProductDTO {
-  @IsUUID()
-  createdBy: string;
-
   @IsString()
   productName: string;
 
@@ -48,9 +45,6 @@ export class UpdateTrendsBatchDTO {
   @IsArray()
   @ArrayMinSize(1)
   productsToUpdate: UpdateTrendDTO[];
-
-  @IsUUID()
-  updatedBy: string;
 }
 
 export class UpdateTrendDTO {
@@ -73,9 +67,6 @@ export class UpdateProductBatchDTO {
   @IsArray()
   @ArrayMinSize(1)
   productsToUpdate: UpdateProductDTO[];
-
-  @IsUUID()
-  updatedBy: string;
 }
 
 export class UpdateProductDTO {
@@ -167,9 +158,6 @@ export class CategoryBatchUpdateDTO {
   @IsArray()
   @ArrayMinSize(1)
   categoriesToUpdate: IUpdateCategory[];
-
-  @IsUUID()
-  updatedBy: string;
 }
 
 export class ProductBatchUpdateDTO {}
@@ -177,9 +165,6 @@ export class ProductBatchUpdateDTO {}
 export class CreateCategoryDTO {
   @IsString()
   categoryName: string;
-
-  @IsUUID()
-  createdBy: string;
 }
 
 export class CreateSubCategoryDTO {
@@ -188,9 +173,6 @@ export class CreateSubCategoryDTO {
 
   @IsUUID()
   categoryId: string;
-
-  @IsUUID()
-  createdBy: string;
 }
 
 export class UpdateSubCategoryDTO {
@@ -210,7 +192,4 @@ export class UpdateSubCategoryBatchDTO {
   @IsArray()
   @ArrayMinSize(1)
   subCategoriesToUpdate: UpdateSubCategoryDTO[];
-
-  @IsUUID()
-  updatedBy: string;
 }

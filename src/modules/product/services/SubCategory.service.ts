@@ -1,9 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { SubCategoryRepository } from 'src/modules/datasource';
 import { LoggingService } from 'src/modules/logging';
-import { CreateSubCategoryDTO, UpdateSubCategoryBatchDTO } from '../types';
 import { BusinessError } from 'src/types';
-import { ISubcategoryRecord } from 'tbh-shared-types';
+import {
+  BatchUpdate,
+  ICreateSubCategory,
+  ISubcategoryRecord,
+  IUpdateSubCategory,
+} from 'tbh-shared-types';
 
 @Injectable()
 export class SubCategoryService {
@@ -18,7 +22,7 @@ export class SubCategoryService {
   }
 
   async createSubCategory(
-    data: CreateSubCategoryDTO,
+    data: ICreateSubCategory,
   ): Promise<ISubcategoryRecord> {
     this.logger.debug(`Creating subcategory`);
     const subCategory = await this.subCategoryRepo.createSubcategory(data);
@@ -29,22 +33,20 @@ export class SubCategoryService {
   }
 
   async updateSubCategoryBatch(
-    data: UpdateSubCategoryBatchDTO,
+    data: BatchUpdate<IUpdateSubCategory>,
   ): Promise<boolean> {
     this.logger.debug(`Validating batch of subcategories`);
-    const subCategoryIds = data.subCategoriesToUpdate.map(
-      (sc) => sc.subCategoryId,
-    );
+    const subCategoryIds = data.updates.map((sc) => sc.subCategoryId);
     const result =
       await this.subCategoryRepo.verifySubCategoriesExist(subCategoryIds);
 
-    if (result !== data.subCategoriesToUpdate.length) {
+    if (result !== data.updates.length) {
       this.logger.error(`One or more Subcategories received do not exist`);
       throw new BusinessError('Subcategories do not exist', 'INVALID');
     }
 
     return this.subCategoryRepo.updateBatchSubcategories(
-      data.subCategoriesToUpdate,
+      data.updates,
       data.updatedBy,
     );
   }
