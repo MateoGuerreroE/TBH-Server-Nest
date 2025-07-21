@@ -21,7 +21,7 @@ import {
   UpdateProductBatchDTO,
   UpdateProductObjDTO,
 } from '../types';
-import { IProductRecord } from 'packages/tbh-shared-types/dist';
+import { IProductRecord } from 'tbh-shared-types';
 import { IAdminLoginData, ProductFilters } from 'tbh-shared-types';
 import { Auth } from 'src/modules/access/auth/discriminator';
 import { AdminAuthor } from 'src/modules/access/auth';

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { OrderRepository } from 'src/modules/datasource';
 import { CreateOrderDTO, UpdateOrderDTO } from '../types';
 import { BusinessError, CustomError } from 'src/types';
-import { IOrderWithRelations } from 'packages/tbh-shared-types/dist';
+import { IOrderWithRelations } from 'tbh-shared-types';
 import { ICreateOrderItem, IOrderRecord } from 'tbh-shared-types';
 
 @Injectable()

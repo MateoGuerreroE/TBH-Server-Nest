@@ -9,7 +9,7 @@ import {
 import { CreateOrderDTO, UpdateOrderDTO } from '../types';
 import { LoggingService } from 'src/modules/logging';
 import { ControllerError } from 'src/types';
-import { IOrderWithRelations } from 'packages/tbh-shared-types/dist';
+import { IOrderWithRelations } from 'tbh-shared-types';
 import { IOrderRecord } from 'tbh-shared-types';
 import { Auth } from 'src/modules/access/auth/discriminator';
 
