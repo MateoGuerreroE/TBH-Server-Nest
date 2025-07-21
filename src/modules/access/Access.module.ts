@@ -7,6 +7,10 @@ import { LoggingModule } from '../logging';
 import { FirebaseService } from './services/Firebase.service';
 import { JwtService as NestJwtService } from '@nestjs/jwt';
 import { ConfigModule } from '../config';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtAuthGuard } from './auth/jwtAuthGuard';
+import { TokenTypeGuard } from './auth/tokenTypeGuard';
+import { JwtStrategy } from './auth/strategy';
 
 @Module({
   imports: [
@@ -15,7 +19,15 @@ import { ConfigModule } from '../config';
     DatasourceModule,
   ],
   controllers: [UserController],
-  providers: [UserService, JwtService, FirebaseService, NestJwtService],
+  providers: [
+    JwtStrategy,
+    UserService,
+    JwtService,
+    FirebaseService,
+    NestJwtService,
+    { provide: APP_GUARD, useClass: JwtAuthGuard },
+    { provide: APP_GUARD, useClass: TokenTypeGuard },
+  ],
   exports: [UserService],
 })
 export class AccessModule {}
