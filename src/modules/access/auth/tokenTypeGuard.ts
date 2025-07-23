@@ -12,12 +12,19 @@ export class TokenTypeGuard implements CanActivate {
   constructor(private reflector: Reflector) {}
 
   canActivate(context: ExecutionContext): boolean {
+    // Check if the route has an @Auth() decorator
+    const requiredType: AuthType = this.reflector.get<AuthType>(
+      AUTH_TYPE_KEY,
+      context.getHandler(),
+    );
+
+    // If no @Auth() decorator is present, skip this guard
+    if (!requiredType) {
+      return true;
+    }
+
     const request = context.switchToHttp().getRequest<Express.Request>();
     const user = request.user;
-
-    const requiredType: AuthType =
-      this.reflector.get<AuthType>(AUTH_TYPE_KEY, context.getHandler()) ||
-      'visitor';
 
     if (!user || !user.role)
       throw new UnauthorizedException('Invalid Access Token');

@@ -3,8 +3,8 @@ import { CategoryRepository } from '../../datasource';
 import { LoggingService } from 'src/modules/logging';
 import { BusinessError } from 'src/types';
 import {
+  ICategoriesWithProducts,
   ICategoryRecord,
-  ICategoryWithRelations,
   ICreateCategory,
   IUpdateCategory,
 } from 'tbh-shared-types';
@@ -23,11 +23,30 @@ export class CategoryService {
     return categories;
   }
 
-  async getInitialCategories(): Promise<ICategoryWithRelations[]> {
+  async getInitialCategories(): Promise<ICategoriesWithProducts[]> {
     this.logger.debug(`Fetching initial categories with products`);
     const categories = await this.categoryRepository.getInitialCategories();
     this.logger.debug(`Found ${categories.length} initial categories`);
-    return categories;
+
+    const result = categories.map((cat) => {
+      const allNestedProducts = cat.subCategories
+        .map((sc) => sc.products)
+        .flat();
+
+      /** Randomized order -> Change this as needed */
+      const categoryProducts = allNestedProducts.sort(
+        () => Math.random() - 0.5,
+      );
+
+      delete cat.subCategories;
+
+      return {
+        ...cat,
+        products: categoryProducts.slice(0, 5),
+      };
+    });
+
+    return result;
   }
 
   async updateCategoryBatch(

@@ -63,8 +63,8 @@ importers:
         specifier: ^7.8.1
         version: 7.8.2
       tbh-shared-types:
-        specifier: ^1.0.3
-        version: 1.0.3
+        specifier: ^1.0.4
+        version: 1.0.4
     devDependencies:
       '@nestjs/cli':
         specifier: ^10.0.0
@@ -3418,8 +3418,8 @@ packages:
     resolution: {integrity: sha512-Re10+NauLTMCudc7T5WLFLAwDhQ0JWdrMK+9B2M8zR5hRExKmsRDCBA7/aV/pNJFltmBFO5BAMlQFi/vq3nKOg==}
     engines: {node: '>=6'}
 
-  tbh-shared-types@1.0.3:
-    resolution: {integrity: sha512-Zwx/1UMpuLIi0GNDKX5t5x/GDZlyzDUo5+Dwl4QUARWAnHmTmHCG7XphJE3g0ZgSUzaACOrAXVNdVbihZFyMjQ==}
+  tbh-shared-types@1.0.4:
+    resolution: {integrity: sha512-VfKdAqjS/kny2OIImCmeoWvEGQKKmLFBb/2ejFy/EVL2002t69q36L8x7JaBG4tNElMvdfGngGh9vLYhq5cP3w==}
 
   teeny-request@9.0.0:
     resolution: {integrity: sha512-resvxdc6Mgb7YEThw6G6bExlXKkv6+YbuzGg9xuXxSgxJF7Ozs+o8Y9+2R3sArdWdW8nOokoQb1yrpFB0pQK2g==}
@@ -7518,7 +7518,7 @@ snapshots:
 
   tapable@2.2.2: {}
 
-  tbh-shared-types@1.0.3: {}
+  tbh-shared-types@1.0.4: {}
 
   teeny-request@9.0.0:
     dependencies:

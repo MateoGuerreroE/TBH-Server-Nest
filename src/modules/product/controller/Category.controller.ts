@@ -8,7 +8,11 @@ import {
 } from 'src/utils/response';
 import { LoggingService } from 'src/modules/logging';
 import { CategoryBatchUpdateDTO, CreateCategoryDTO } from '../types';
-import { IAdminLoginData, ICategoryRecord } from 'tbh-shared-types';
+import {
+  IAdminLoginData,
+  ICategoriesWithProducts,
+  ICategoryRecord,
+} from 'tbh-shared-types';
 import { Auth } from 'src/modules/access/auth/discriminator';
 import { AdminAuthor } from 'src/modules/access/auth';
 
@@ -30,9 +34,10 @@ export class CategoryController {
     }
   }
 
-  @Auth('visitor')
   @Get('initial')
-  async getInitialCategories(): Promise<ControllerResponse<ICategoryRecord[]>> {
+  async getInitialCategories(): Promise<
+    ControllerResponse<ICategoriesWithProducts[]>
+  > {
     try {
       const categories = await this.categoryService.getInitialCategories();
       return SuccessResponse.send(categories);
