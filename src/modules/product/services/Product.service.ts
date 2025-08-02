@@ -63,10 +63,12 @@ export class ProductService {
           maxPrice,
         });
       }
+
       return this.productRepository.getFilteredProducts({
         keyword,
         minPrice,
         maxPrice,
+        paginationOptions: filters.paginationOptions,
       });
     }
 

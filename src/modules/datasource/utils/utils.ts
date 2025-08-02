@@ -57,7 +57,7 @@ export function setPagination(paginationOptions?: IPaginationOptions): {
   const offset = (page - 1) * parseInt(pageSize);
 
   return {
-    limit: parseInt(pageSize),
+    limit: parseInt(pageSize ?? '20'),
     offset: offset >= 0 ? offset : undefined,
   };
 }
