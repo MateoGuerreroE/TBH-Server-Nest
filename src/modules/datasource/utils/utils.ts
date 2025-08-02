@@ -1,4 +1,5 @@
 import { SQL, sql } from 'drizzle-orm';
+import { IPaginationOptions } from 'tbh-shared-types';
 
 export function generateBatchSQL<T extends object>(
   table: string,
@@ -42,4 +43,21 @@ export function generateBatchSQL<T extends object>(
     SET ${sql.join(setClauses, sql`, `)}
     WHERE "${sql.raw(String(idKey))}" IN (${sql.join(ids, sql`, `)})
   `;
+}
+
+export function setPagination(paginationOptions?: IPaginationOptions): {
+  limit?: number | undefined;
+  offset?: number | undefined;
+} {
+  if (!paginationOptions) {
+    return {};
+  }
+
+  const { page, pageSize } = paginationOptions;
+  const offset = (page - 1) * parseInt(pageSize);
+
+  return {
+    limit: parseInt(pageSize),
+    offset: offset >= 0 ? offset : undefined,
+  };
 }

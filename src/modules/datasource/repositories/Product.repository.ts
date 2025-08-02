@@ -1,11 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { NeonHttpDatabase } from 'drizzle-orm/neon-http';
 import * as schema from '../schema/schema';
 import { DataSourceClient } from '../DataSourceClient';
 import { eq, inArray, sql } from 'drizzle-orm';
-import { generateBatchSQL } from '../utils/utils';
+import { generateBatchSQL, setPagination } from '../utils/utils';
 import {
   ICreateProduct,
+  IPaginationOptions,
   IProductPublicFilters,
   IProductRecord,
   IProductWithRelations,
@@ -17,22 +18,28 @@ import {
 
 @Injectable()
 export class ProductRepository {
+  private readonly logger = new Logger(ProductRepository.name);
   private client: NeonHttpDatabase<typeof schema>;
   constructor(private readonly datasource: DataSourceClient) {
     this.client = this.datasource.getClient();
   }
 
-  async getAllProduct(): Promise<IProductRecord[]> {
+  async getAllProduct(
+    paginationOptions?: IPaginationOptions,
+  ): Promise<IProductRecord[]> {
+    console.log(setPagination(paginationOptions));
     return this.client.query.productTable.findMany({
       where: (product, { isNull }) => isNull(product.deletedAt),
       with: {
         subCategory: {},
       },
+      ...setPagination(paginationOptions),
     });
   }
 
   async getAllProductsWithSubCategoryId(
     subCategoryId: string,
+    paginationOptions?: IPaginationOptions,
   ): Promise<IProductWithRelations[]> {
     return this.client.query.productTable.findMany({
       where: (product, { and, eq, isNull }) =>
@@ -43,17 +50,21 @@ export class ProductRepository {
       with: {
         subCategory: true,
       },
+      ...setPagination(paginationOptions),
     });
   }
 
   async getAllProductsFromCategoryId(
     categoryId: string,
+    paginationOptions?: IPaginationOptions,
   ): Promise<IProductWithRelations[]> {
     const subCategories = await this.client.query.subcategoryTable.findMany({
       where: (subcategory, { eq }) => eq(subcategory.categoryId, categoryId),
+
       with: {
         category: true,
       },
+      ...setPagination(paginationOptions),
     });
 
     return this.client.query.productTable.findMany({
@@ -123,12 +134,14 @@ export class ProductRepository {
     filters: IProductPublicFilters,
   ): Promise<IProductWithRelations[]> {
     console.log(`Applying filters: ${JSON.stringify(filters)}`);
+
     return this.client.query.productTable.findMany({
       where: (product, { and }) =>
         and(
           ...(filters.keyword
             ? [
                 sql`(
+                  ${product.productName} ILIKE ${`%${filters.keyword}%`} OR
             (${product.productDescription} ->> 'short') ILIKE ${`%${filters.keyword}%`} OR
             (${product.productDescription} ->> 'content') ILIKE ${`%${filters.keyword}%`} OR
             ${product.productTags} @> ARRAY[${filters.keyword}]
@@ -146,6 +159,7 @@ export class ProductRepository {
       with: {
         subCategory: true,
       },
+      ...setPagination(filters.paginationOptions),
     });
   }
 

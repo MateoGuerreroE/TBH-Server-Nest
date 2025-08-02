@@ -1,7 +1,7 @@
 import { Body, Controller, Post } from '@nestjs/common';
 
 import { UserService } from '../services/User.service';
-import { CreateUserDTO, LoginUserDTO, UserLogin } from '../types';
+import { CreateUserDTO, LoginUserDTO } from '../types';
 import {
   ControllerResponse,
   handleControllerError,
@@ -9,7 +9,7 @@ import {
   validatePayload,
 } from 'src/utils/response';
 import { LoggingService } from 'src/modules/logging';
-import { IUserRecord } from 'tbh-shared-types';
+import { IUserLoginData, IUserRecord } from 'tbh-shared-types';
 
 @Controller('user')
 export class UserController {
@@ -19,7 +19,7 @@ export class UserController {
   ) {}
 
   @Post('login')
-  async loginUser(@Body() body): Promise<ControllerResponse<UserLogin>> {
+  async loginUser(@Body() body): Promise<ControllerResponse<IUserLoginData>> {
     try {
       const loginPayload = await validatePayload(LoginUserDTO, body);
       const result = await this.userService.loginUser(loginPayload.token);

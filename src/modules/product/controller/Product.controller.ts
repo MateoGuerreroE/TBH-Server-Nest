@@ -59,7 +59,13 @@ export class ProductController {
     @Query() filters: ProductFilters,
   ): Promise<ControllerResponse<IProductRecord[]>> {
     try {
-      const result = await this.productService.getFilteredProducts(filters);
+      const result = await this.productService.getFilteredProducts({
+        ...filters,
+        paginationOptions: {
+          page: filters['page'] || 1,
+          pageSize: filters['size'] || 20,
+        },
+      });
       return SuccessResponse.send(result);
     } catch (e) {
       return handleControllerError(e, this.logger);

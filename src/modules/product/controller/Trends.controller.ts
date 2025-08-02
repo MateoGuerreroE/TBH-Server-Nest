@@ -19,7 +19,6 @@ export class TrendsController {
     private readonly logger: LoggingService,
   ) {}
 
-  @Auth('visitor')
   @Get()
   async getAllTrends(): Promise<ControllerResponse<ITrendRecord[]>> {
     try {

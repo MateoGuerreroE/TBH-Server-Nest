@@ -69,6 +69,14 @@ export class ProductService {
         maxPrice,
       });
     }
+
+    console.log(filters);
+
+    if (!result.length) {
+      this.logger.debug('No filters applied, fetching all products');
+      return this.productRepository.getAllProduct(filters.paginationOptions);
+    }
+
     return result;
   }
 

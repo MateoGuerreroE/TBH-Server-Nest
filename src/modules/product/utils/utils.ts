@@ -12,6 +12,7 @@ export function filterProductResult(
 
   if (keyword) {
     const keywordLower = keyword.toLowerCase();
+
     const matchesKeyword = (product: IProductWithRelations) => {
       return (
         product.productName.toLowerCase().includes(keywordLower) ||
