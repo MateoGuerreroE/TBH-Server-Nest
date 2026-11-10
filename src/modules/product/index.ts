@@ -1,2 +1,2 @@
 export * from './Product.module';
-export * from './services';
+export * from './services/index';

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from 'src/modules/config';
+import { ConfigService } from '../../config/index';
 import { JwtService as NestJwtService } from '@nestjs/jwt';
-import { IUserRecord } from 'tbh-shared-types';
+import type { IUserRecord } from 'tbh-shared-types';
 
 @Injectable()
 export class JwtService {

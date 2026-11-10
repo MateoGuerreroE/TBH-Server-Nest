@@ -5,13 +5,13 @@ import {
   handleControllerError,
   SuccessResponse,
   validatePayload,
-} from 'src/utils/response';
-import { CreateOrderDTO, UpdateOrderDTO } from '../types';
-import { LoggingService } from 'src/modules/logging';
-import { ControllerError } from 'src/types';
-import { IOrderWithRelations } from 'tbh-shared-types';
-import { IOrderRecord } from 'tbh-shared-types';
-import { Auth } from 'src/modules/access/auth/discriminator';
+} from '../../../utils/response';
+import { CreateOrderDTO, UpdateOrderDTO } from '../types/index';
+import { LoggingService } from '../../logging/index';
+import { ControllerError } from '../../../types/index';
+import type { IOrderWithRelations } from 'tbh-shared-types';
+import type { IOrderRecord } from 'tbh-shared-types';
+import { Auth } from '../../access/auth/discriminator';
 
 @Controller('order')
 export class OrderController {

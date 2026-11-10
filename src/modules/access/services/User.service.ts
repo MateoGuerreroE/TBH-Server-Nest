@@ -1,11 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { UserRepository } from 'src/modules/datasource';
-import { BusinessError, CustomError } from 'src/types';
+import { UserRepository } from '../../datasource/index';
+import { BusinessError, CustomError } from '../../../types/index';
 import { err, ok, Result } from 'neverthrow';
 import { FirebaseService } from './Firebase.service';
-import { LoggingService } from 'src/modules/logging';
+import { LoggingService } from '../../logging/index';
 import { JwtService } from './Jwt.service';
-import { ICreateUser, IUserLoginData, IUserRecord } from 'tbh-shared-types';
+import type {
+  ICreateUser,
+  IUserLoginData,
+  IUserRecord,
+} from 'tbh-shared-types';
 
 @Injectable()
 export class UserService {

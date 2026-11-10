@@ -1,3 +1,3 @@
-import { ICreateOrder } from 'tbh-shared-types';
+import type { ICreateOrder } from 'tbh-shared-types';
 
 export type BaseCreateOrder = Omit<ICreateOrder, 'items'>;

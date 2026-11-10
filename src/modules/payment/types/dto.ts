@@ -11,9 +11,9 @@ import {
   ValidateIf,
   ValidateNested,
 } from 'class-validator';
-import { ExternalPaymentData, ExternalPaymentResponse } from './payment';
+import type { ExternalPaymentData, ExternalPaymentResponse } from './payment';
 import { Exclude, Type } from 'class-transformer';
-import {
+import type {
   ICreateCoupon,
   ICreateOrder,
   ICreateOrderItem,

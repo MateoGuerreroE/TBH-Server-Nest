@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { NeonHttpDatabase } from 'drizzle-orm/neon-http';
 import { DataSourceClient } from '../DataSourceClient';
-import { IUserRecord, IUpdateUser, ICreateUser } from 'tbh-shared-types';
+import type { IUserRecord, IUpdateUser, ICreateUser } from 'tbh-shared-types';
 import * as schema from '../schema/schema';
 import { eq } from 'drizzle-orm';
 

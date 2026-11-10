@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import * as schema from '../schema/schema';
 import { DataSourceClient } from '../DataSourceClient';
 import { NeonHttpDatabase } from 'drizzle-orm/neon-http';
-import { IAddressRecord, ICreateAddress } from 'tbh-shared-types';
+import type { IAddressRecord, ICreateAddress } from 'tbh-shared-types';
 
 @Injectable()
 export class AddressRepository {

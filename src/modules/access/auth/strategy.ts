@@ -1,8 +1,8 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { AuthType } from 'types/express';
-import { AdminRepository } from '../../datasource/repositories';
+import type { AuthType } from '../../../../types/express';
+import { AdminRepository } from '../../datasource/repositories/index';
 
 const roleType = ['visitor', 'user', 'admin'];
 

@@ -3,7 +3,7 @@ import { DataSourceClient } from '../DataSourceClient';
 import { NeonHttpDatabase } from 'drizzle-orm/neon-http';
 import * as schema from '../schema/schema';
 import { eq } from 'drizzle-orm';
-import {
+import type {
   ICreatePayment,
   IPaymentRecord,
   IPaymentWithRelations,

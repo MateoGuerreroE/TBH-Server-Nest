@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import MercadoPagoConfig, { Payment } from 'mercadopago';
-import { ConfigService } from 'src/modules/config';
-import { ExternalPaymentData, ExternalPaymentResponse } from '../types';
-import { BusinessError } from 'src/types';
+import { MercadoPagoConfig, Payment } from 'mercadopago';
+import { ConfigService } from '../../config/index';
+import { ExternalPaymentData, ExternalPaymentResponse } from '../types/index';
+import { BusinessError } from '../../../types/index';
 
 @Injectable()
 export class MercadoLibreService {

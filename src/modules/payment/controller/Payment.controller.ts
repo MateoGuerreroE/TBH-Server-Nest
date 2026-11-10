@@ -1,16 +1,16 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { PaymentService } from '../services/Payment.service';
-import { LoggingService } from 'src/modules/logging';
+import { LoggingService } from '../../logging/index';
 import {
   ControllerResponse,
   handleControllerError,
   SuccessResponse,
   validatePayload,
-} from 'src/utils/response';
-import { ProcessPaymentDTO } from '../types';
-import { ControllerError } from 'src/types';
-import { IPaymentRecord } from 'tbh-shared-types';
-import { Auth } from 'src/modules/access/auth/discriminator';
+} from '../../../utils/response';
+import { ProcessPaymentDTO } from '../types/index';
+import { ControllerError } from '../../../types/index';
+import type { IPaymentRecord } from 'tbh-shared-types';
+import { Auth } from '../../access/auth/discriminator';
 
 @Controller('payment')
 export class PaymentController {

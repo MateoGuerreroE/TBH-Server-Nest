@@ -13,18 +13,18 @@ import {
   handleControllerError,
   SuccessResponse,
   validatePayload,
-} from 'src/utils/response';
-import { ProductService } from '../services';
-import { LoggingService } from 'src/modules/logging';
+} from '../../../utils/response';
+import { ProductService } from '../services/index';
+import { LoggingService } from '../../logging/index';
 import {
   CreateProductDTO,
   UpdateProductBatchDTO,
   UpdateProductObjDTO,
-} from '../types';
-import { IProductRecord } from 'tbh-shared-types';
-import { IAdminLoginData, ProductFilters } from 'tbh-shared-types';
-import { Auth } from 'src/modules/access/auth/discriminator';
-import { AdminAuthor } from 'src/modules/access/auth';
+} from '../types/index';
+import type { IProductRecord } from 'tbh-shared-types';
+import type { IAdminLoginData, ProductFilters } from 'tbh-shared-types';
+import { Auth } from '../../access/auth/discriminator';
+import { AdminAuthor } from '../../access/auth/index';
 
 @Controller('product')
 export class ProductController {
@@ -41,19 +41,6 @@ export class ProductController {
   }
 
   @Auth('visitor')
-  @Get(':productId([0-9a-fA-F-]{36})')
-  async getProductById(
-    @Param() params: { productId: string },
-  ): Promise<ControllerResponse<IProductRecord>> {
-    try {
-      const result = await this.productService.getProductById(params.productId);
-      return SuccessResponse.send(result);
-    } catch (e) {
-      return handleControllerError(e, this.logger);
-    }
-  }
-
-  @Auth('visitor')
   @Get('filter')
   async getFilteredProducts(
     @Query() filters: ProductFilters,
@@ -66,6 +53,19 @@ export class ProductController {
           pageSize: filters['size'] || 20,
         },
       });
+      return SuccessResponse.send(result);
+    } catch (e) {
+      return handleControllerError(e, this.logger);
+    }
+  }
+
+  @Auth('visitor')
+  @Get(':productId')
+  async getProductById(
+    @Param() params: { productId: string },
+  ): Promise<ControllerResponse<IProductRecord>> {
+    try {
+      const result = await this.productService.getProductById(params.productId);
       return SuccessResponse.send(result);
     } catch (e) {
       return handleControllerError(e, this.logger);

@@ -10,7 +10,7 @@ import {
   IsUUID,
   ValidateNested,
 } from 'class-validator';
-import { IUpdateCategory, ImageType, VideoType } from 'tbh-shared-types';
+import type { IUpdateCategory, ImageType, VideoType } from 'tbh-shared-types';
 
 export class CreateProductDTO {
   @IsString()

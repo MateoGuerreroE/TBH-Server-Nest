@@ -1,6 +1,6 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
-import { IAdminLoginData, IUserLoginData } from 'tbh-shared-types';
-import { IVisitorLoginData } from 'types/express';
+import type { IAdminLoginData, IUserLoginData } from 'tbh-shared-types';
+import type { IVisitorLoginData } from '../../../../types/express';
 
 export const UserAuthor = createParamDecorator(
   (data: unknown, ctx: ExecutionContext): IUserLoginData => {

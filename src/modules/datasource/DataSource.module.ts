@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '../config';
+import { ConfigModule } from '../config/index';
 import {
   CouponRepository,
   OrderRepository,
@@ -10,7 +10,7 @@ import {
   CategoryRepository,
   SubCategoryRepository,
   AdminRepository,
-} from './repositories';
+} from './repositories/index';
 import { DataSourceClient } from './DataSourceClient';
 
 @Module({

@@ -1,15 +1,15 @@
 import { Body, Controller, Post } from '@nestjs/common';
 
 import { UserService } from '../services/User.service';
-import { CreateUserDTO, LoginUserDTO } from '../types';
+import { CreateUserDTO, LoginUserDTO } from '../types/index';
 import {
   ControllerResponse,
   handleControllerError,
   SuccessResponse,
   validatePayload,
-} from 'src/utils/response';
-import { LoggingService } from 'src/modules/logging';
-import { IUserLoginData, IUserRecord } from 'tbh-shared-types';
+} from '../../../utils/response';
+import { LoggingService } from '../../logging/index';
+import type { IUserLoginData, IUserRecord } from 'tbh-shared-types';
 
 @Controller('user')
 export class UserController {

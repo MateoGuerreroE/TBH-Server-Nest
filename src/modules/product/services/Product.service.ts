@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { ProductRepository } from 'src/modules/datasource';
-import { LoggingService } from 'src/modules/logging';
-import { BusinessError } from 'src/types';
-import { UpdateProductDTO, UpdateProductObjDTO } from '../types';
+import { ProductRepository } from '../../datasource/index';
+import { LoggingService } from '../../logging/index';
+import { BusinessError } from '../../../types/index';
+import { UpdateProductDTO, UpdateProductObjDTO } from '../types/index';
 import { filterProductResult } from '../utils/utils';
-import {
+import type {
   ICreateProduct,
   IProductRecord,
   IProductWithRelations,

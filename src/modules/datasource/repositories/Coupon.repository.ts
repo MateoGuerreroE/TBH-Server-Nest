@@ -3,7 +3,11 @@ import { NeonHttpDatabase } from 'drizzle-orm/neon-http';
 import * as schema from '../schema/schema';
 import { DataSourceClient } from '../DataSourceClient';
 import { eq } from 'drizzle-orm';
-import { ICouponRecord, ICreateCoupon, IUpdateCoupon } from 'tbh-shared-types';
+import type {
+  ICouponRecord,
+  ICreateCoupon,
+  IUpdateCoupon,
+} from 'tbh-shared-types';
 
 @Injectable()
 export class CouponRepository {

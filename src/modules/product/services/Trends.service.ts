@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { ProductRepository } from 'src/modules/datasource';
-import { LoggingService } from 'src/modules/logging';
-import { BusinessError } from 'src/types';
-import { ITrendRecord, IUpdateTrend } from 'tbh-shared-types';
+import { ProductRepository } from '../../datasource/index';
+import { LoggingService } from '../../logging/index';
+import { BusinessError } from '../../../types/index';
+import type { ITrendRecord, IUpdateTrend } from 'tbh-shared-types';
 
 @Injectable()
 export class TrendsService {

@@ -1,7 +1,7 @@
 import { NeonHttpDatabase } from 'drizzle-orm/neon-http';
 import * as schema from '../schema/schema';
 import { DataSourceClient } from '../DataSourceClient';
-import { IAdminRecord } from 'tbh-shared-types';
+import type { IAdminRecord } from 'tbh-shared-types';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()

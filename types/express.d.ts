@@ -11,6 +11,9 @@ export interface IVisitorLoginData {
 
 declare global {
   namespace Express {
+    interface User {
+      role: AuthType['role'];
+    }
     interface Request {
       user?: AuthType;
     }

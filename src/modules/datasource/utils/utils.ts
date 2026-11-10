@@ -1,5 +1,5 @@
 import { SQL, sql } from 'drizzle-orm';
-import { IPaginationOptions } from 'tbh-shared-types';
+import type { IPaginationOptions } from 'tbh-shared-types';
 
 export function generateBatchSQL<T extends object>(
   table: string,
@@ -54,10 +54,10 @@ export function setPagination(paginationOptions?: IPaginationOptions): {
   }
 
   const { page, pageSize } = paginationOptions;
-  const offset = (page - 1) * parseInt(pageSize);
+  const offset = (page - 1) * Number(pageSize);
 
   return {
-    limit: parseInt(pageSize ?? '20'),
+    limit: Number(pageSize ?? 20),
     offset: offset >= 0 ? offset : undefined,
   };
 }

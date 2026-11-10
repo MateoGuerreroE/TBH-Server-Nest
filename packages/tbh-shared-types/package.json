@@ -9,11 +9,10 @@
   ],
   "scripts": {
     "build": "tsc",
-    "prepare": "npm run build"
+    "prepare": "tsc"
   },
   "devDependencies": {
-    "@types/yargs": "^17.0.33",
-    "typescript": "^5.4.5"
+    "typescript": "^6.0.3"
   },
   "publishConfig": {
     "access": "public"

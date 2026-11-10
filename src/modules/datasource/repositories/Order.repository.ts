@@ -3,13 +3,13 @@ import { NeonHttpDatabase } from 'drizzle-orm/neon-http';
 import * as schema from '../schema/schema';
 import { DataSourceClient } from '../DataSourceClient';
 import { eq } from 'drizzle-orm';
-import {
+import type {
   ICreateOrderItem,
   IOrderRecord,
   IOrderWithRelations,
   IUpdateOrder,
 } from 'tbh-shared-types';
-import { BaseCreateOrder } from '../types';
+import { BaseCreateOrder } from '../types/index';
 
 @Injectable()
 export class OrderRepository {

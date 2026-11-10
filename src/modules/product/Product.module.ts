@@ -1,18 +1,18 @@
 import { Module } from '@nestjs/common';
-import { LoggingModule } from '../logging';
+import { LoggingModule } from '../logging/index';
 import {
   CategoryService,
   ProductService,
   SubCategoryService,
   TrendsService,
-} from './services';
-import { DatasourceModule } from '../datasource';
+} from './services/index';
+import { DatasourceModule } from '../datasource/index';
 import {
   CategoryController,
   ProductController,
   SubCategoryController,
   TrendsController,
-} from './controller';
+} from './controller/index';
 
 @Module({
   imports: [LoggingModule.forContext('ProductModule'), DatasourceModule],

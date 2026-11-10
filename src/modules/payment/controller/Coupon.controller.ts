@@ -4,13 +4,13 @@ import {
   handleControllerError,
   SuccessResponse,
   validatePayload,
-} from 'src/utils/response';
+} from '../../../utils/response';
 import { CouponService } from '../services/Coupon.service';
-import { LoggingService } from 'src/modules/logging';
-import { CreateCouponDTO } from '../types';
-import { ControllerError } from 'src/types';
-import { ICouponRecord } from 'tbh-shared-types';
-import { Auth } from 'src/modules/access/auth/discriminator';
+import { LoggingService } from '../../logging/index';
+import { CreateCouponDTO } from '../types/index';
+import { ControllerError } from '../../../types/index';
+import type { ICouponRecord } from 'tbh-shared-types';
+import { Auth } from '../../access/auth/discriminator';
 
 @Controller('coupon')
 export class CouponController {

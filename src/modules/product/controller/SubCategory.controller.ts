@@ -1,20 +1,23 @@
 import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { SubCategoryService } from '../services/SubCategory.service';
-import { LoggingService } from 'src/modules/logging';
+import { LoggingService } from '../../logging/index';
 import {
   ControllerResponse,
   handleControllerError,
   SuccessResponse,
   validatePayload,
-} from 'src/utils/response';
-import { CreateSubCategoryDTO, UpdateSubCategoryBatchDTO } from '../types';
+} from '../../../utils/response';
 import {
+  CreateSubCategoryDTO,
+  UpdateSubCategoryBatchDTO,
+} from '../types/index';
+import type {
   IAdminLoginData,
   ISubcategoryRecord,
   IUpdateSubCategory,
 } from 'tbh-shared-types';
-import { Auth } from 'src/modules/access/auth/discriminator';
-import { AdminAuthor } from 'src/modules/access/auth';
+import { Auth } from '../../access/auth/discriminator';
+import { AdminAuthor } from '../../access/auth/index';
 
 @Controller('subCategory')
 export class SubCategoryController {

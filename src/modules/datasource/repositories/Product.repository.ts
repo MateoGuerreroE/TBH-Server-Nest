@@ -4,7 +4,7 @@ import * as schema from '../schema/schema';
 import { DataSourceClient } from '../DataSourceClient';
 import { eq, inArray, sql } from 'drizzle-orm';
 import { generateBatchSQL, setPagination } from '../utils/utils';
-import {
+import type {
   ICreateProduct,
   IPaginationOptions,
   IProductPublicFilters,

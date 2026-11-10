@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { CategoryRepository } from '../../datasource';
-import { LoggingService } from 'src/modules/logging';
-import { BusinessError } from 'src/types';
-import {
+import { CategoryRepository } from '../../datasource/index';
+import { LoggingService } from '../../logging/index';
+import { BusinessError } from '../../../types/index';
+import type {
   ICategoriesWithProducts,
   ICategoryRecord,
   ICreateCategory,

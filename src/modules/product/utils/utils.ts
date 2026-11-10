@@ -1,4 +1,7 @@
-import { IProductPublicFilters, IProductWithRelations } from 'tbh-shared-types';
+import type {
+  IProductPublicFilters,
+  IProductWithRelations,
+} from 'tbh-shared-types';
 
 export function filterProductResult(
   productList: IProductWithRelations[],

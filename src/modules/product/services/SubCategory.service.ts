@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { SubCategoryRepository } from 'src/modules/datasource';
-import { LoggingService } from 'src/modules/logging';
-import { BusinessError } from 'src/types';
-import {
+import { SubCategoryRepository } from '../../datasource/index';
+import { LoggingService } from '../../logging/index';
+import { BusinessError } from '../../../types/index';
+import type {
   BatchUpdate,
   ICreateSubCategory,
   ISubcategoryRecord,

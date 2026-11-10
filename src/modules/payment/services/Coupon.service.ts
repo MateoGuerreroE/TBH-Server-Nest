@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { CouponRepository } from 'src/modules/datasource';
-import { LoggingService } from 'src/modules/logging';
-import { BusinessError } from 'src/types';
-import { CreateCouponDTO } from '../types';
-import { ICouponRecord } from 'tbh-shared-types';
+import { CouponRepository } from '../../datasource/index';
+import { LoggingService } from '../../logging/index';
+import { BusinessError } from '../../../types/index';
+import { CreateCouponDTO } from '../types/index';
+import type { ICouponRecord } from 'tbh-shared-types';
 
 @Injectable()
 export class CouponService {

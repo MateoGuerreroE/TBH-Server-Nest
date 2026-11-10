@@ -4,7 +4,7 @@ import { DataSourceClient } from '../DataSourceClient';
 import { NeonHttpDatabase } from 'drizzle-orm/neon-http';
 import { eq, inArray, sql } from 'drizzle-orm';
 import { generateBatchSQL } from '../utils/utils';
-import {
+import type {
   ICreateSubCategory,
   ISubcategoryRecord,
   IUpdateSubCategory,

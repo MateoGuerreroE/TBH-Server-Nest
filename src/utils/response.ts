@@ -1,8 +1,8 @@
 import { BadRequestException } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { validate, ValidationError } from 'class-validator';
-import { LoggingService } from 'src/modules/logging';
-import { ControllerError, CustomError } from 'src/types';
+import { LoggingService } from '../modules/logging/index';
+import { ControllerError, CustomError } from '../types/index';
 
 interface SResponse<T> {
   data: T;

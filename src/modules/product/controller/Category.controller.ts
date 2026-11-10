@@ -1,20 +1,20 @@
 import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
-import { CategoryService } from '../services';
+import { CategoryService } from '../services/index';
 import {
   ControllerResponse,
   handleControllerError,
   SuccessResponse,
   validatePayload,
-} from 'src/utils/response';
-import { LoggingService } from 'src/modules/logging';
-import { CategoryBatchUpdateDTO, CreateCategoryDTO } from '../types';
-import {
+} from '../../../utils/response';
+import { LoggingService } from '../../logging/index';
+import { CategoryBatchUpdateDTO, CreateCategoryDTO } from '../types/index';
+import type {
   IAdminLoginData,
   ICategoriesWithProducts,
   ICategoryRecord,
 } from 'tbh-shared-types';
-import { Auth } from 'src/modules/access/auth/discriminator';
-import { AdminAuthor } from 'src/modules/access/auth';
+import { Auth } from '../../access/auth/discriminator';
+import { AdminAuthor } from '../../access/auth/index';
 
 @Controller('category')
 export class CategoryController {

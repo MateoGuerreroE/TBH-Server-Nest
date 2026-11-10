@@ -1,14 +1,14 @@
-import { PaymentRepository } from 'src/modules/datasource/repositories/Payment.repository';
-import { LoggingService } from 'src/modules/logging';
-import { ProcessPaymentDTO, UpdateOrderDTO } from '../types';
+import { PaymentRepository } from '../../datasource/repositories/Payment.repository';
+import { LoggingService } from '../../logging/index';
+import { ProcessPaymentDTO, UpdateOrderDTO } from '../types/index';
 import { Injectable } from '@nestjs/common';
-import { BusinessError } from 'src/types';
+import { BusinessError } from '../../../types/index';
 import { MercadoLibreService } from './MercadoLibre.service';
 import { OrderManagementService } from './OrderManagement.service';
-import { validatePayload } from 'src/utils/response';
-import { UserService } from 'src/modules/access';
-import { AddressRepository } from 'src/modules/datasource';
-import {
+import { validatePayload } from '../../../utils/response';
+import { UserService } from '../../access/index';
+import { AddressRepository } from '../../datasource/index';
+import type {
   IOrderRecord,
   IPaymentRecord,
   IPaymentWithRelations,

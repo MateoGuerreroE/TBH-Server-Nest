@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { drizzle, NeonHttpDatabase } from 'drizzle-orm/neon-http';
-import { ConfigService } from '../config';
+import { ConfigService } from '../config/index';
 import * as schema from './schema/schema';
 
 @Injectable()

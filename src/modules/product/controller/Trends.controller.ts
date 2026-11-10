@@ -1,16 +1,16 @@
 import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { TrendsService } from '../services/Trends.service';
-import { LoggingService } from 'src/modules/logging';
+import { LoggingService } from '../../logging/index';
 import {
   ControllerResponse,
   handleControllerError,
   SuccessResponse,
   validatePayload,
-} from 'src/utils/response';
-import { UpdateTrendsBatchDTO } from '../types';
-import { IAdminLoginData, ITrendRecord } from 'tbh-shared-types';
-import { Auth } from 'src/modules/access/auth/discriminator';
-import { AdminAuthor } from 'src/modules/access/auth';
+} from '../../../utils/response';
+import { UpdateTrendsBatchDTO } from '../types/index';
+import type { IAdminLoginData, ITrendRecord } from 'tbh-shared-types';
+import { Auth } from '../../access/auth/discriminator';
+import { AdminAuthor } from '../../access/auth/index';
 
 @Controller('trends')
 export class TrendsController {

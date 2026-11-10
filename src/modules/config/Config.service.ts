@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import 'dotenv/config';
-import { DataError } from 'src/types';
+import { DataError } from '../../types/index';
 
 @Injectable()
 export class ConfigService {
