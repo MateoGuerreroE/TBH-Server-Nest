@@ -3,7 +3,7 @@ import { ProductRepository } from '../../datasource/index';
 import { LoggingService } from '../../logging/index';
 import { BusinessError } from '../../../types/index';
 import { UpdateProductDTO, UpdateProductObjDTO } from '../types/index';
-import { filterProductResult } from '../utils/utils';
+import { filterProductResult, paginateInMemory } from '../utils/utils';
 import type {
   ICreateProduct,
   IProductRecord,
@@ -27,16 +27,31 @@ export class ProductService {
     filters: ProductFilters,
   ): Promise<IProductWithRelations[]> {
     const result: IProductWithRelations[] = [];
+    const hasCategoryFilter = !!(filters.categoryId || filters.subCategoryId);
+    const hasPublicFilters = !!(
+      filters.keyword ||
+      filters.minPrice ||
+      filters.maxPrice
+    );
 
-    if (filters.categoryId || filters.subCategoryId) {
+    if (hasCategoryFilter) {
       const { categoryId, subCategoryId } = filters;
       this.logger.debug(
         `Fetching products with categoryId: ${categoryId}, subCategoryId: ${subCategoryId}`,
       );
+      // When the list is narrowed in memory afterwards (both ids, or keyword /
+      // price filters), paginate after narrowing instead of in the database.
+      const narrowedInMemory =
+        (categoryId && subCategoryId) || hasPublicFilters;
+      const paginate = narrowedInMemory ? undefined : filters.paginationOptions;
       const productList = categoryId
-        ? await this.productRepository.getAllProductsFromCategoryId(categoryId)
+        ? await this.productRepository.getAllProductsFromCategoryId(
+            categoryId,
+            paginate,
+          )
         : await this.productRepository.getAllProductsWithSubCategoryId(
             subCategoryId,
+            paginate,
           );
 
       if (categoryId && subCategoryId) {
@@ -52,16 +67,15 @@ export class ProductService {
       }
     }
 
-    if (filters.keyword || filters.minPrice || filters.maxPrice) {
+    if (hasPublicFilters) {
       this.logger.debug('Applying public filters to products');
       const { keyword, minPrice, maxPrice } = filters;
-      // If there're results mean there was a prev filter applied
-      if (result.length) {
-        return filterProductResult(result, {
-          keyword,
-          minPrice,
-          maxPrice,
-        });
+      // A category filter was applied first (even if it matched nothing)
+      if (hasCategoryFilter) {
+        return paginateInMemory(
+          filterProductResult(result, { keyword, minPrice, maxPrice }),
+          filters.paginationOptions,
+        );
       }
 
       return this.productRepository.getFilteredProducts({
@@ -72,11 +86,14 @@ export class ProductService {
       });
     }
 
-    console.log(filters);
-
-    if (!result.length) {
+    if (!hasCategoryFilter) {
       this.logger.debug('No filters applied, fetching all products');
       return this.productRepository.getAllProduct(filters.paginationOptions);
+    }
+
+    // Both ids were given: narrowed in memory, so paginate now
+    if (filters.categoryId && filters.subCategoryId) {
+      return paginateInMemory(result, filters.paginationOptions);
     }
 
     return result;

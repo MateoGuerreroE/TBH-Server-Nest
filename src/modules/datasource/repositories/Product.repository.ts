@@ -50,6 +50,11 @@ export class ProductRepository {
       with: {
         subCategory: true,
       },
+      // Stable order, otherwise pages can repeat or skip rows
+      orderBy: (product, { asc }) => [
+        asc(product.productName),
+        asc(product.productId),
+      ],
       ...setPagination(paginationOptions),
     });
   }
@@ -60,22 +65,28 @@ export class ProductRepository {
   ): Promise<IProductWithRelations[]> {
     const subCategories = await this.client.query.subcategoryTable.findMany({
       where: (subcategory, { eq }) => eq(subcategory.categoryId, categoryId),
-
-      with: {
-        category: true,
-      },
-      ...setPagination(paginationOptions),
+      columns: { subCategoryId: true },
     });
 
+    if (!subCategories.length) return [];
+
     return this.client.query.productTable.findMany({
-      where: (product, { inArray }) =>
-        inArray(
-          product.subCategoryId,
-          subCategories.map((sc) => sc.subCategoryId),
+      where: (product, { and, inArray, isNull }) =>
+        and(
+          inArray(
+            product.subCategoryId,
+            subCategories.map((sc) => sc.subCategoryId),
+          ),
+          isNull(product.deletedAt),
         ),
       with: {
         subCategory: true,
       },
+      orderBy: (product, { asc }) => [
+        asc(product.productName),
+        asc(product.productId),
+      ],
+      ...setPagination(paginationOptions),
     });
   }
 

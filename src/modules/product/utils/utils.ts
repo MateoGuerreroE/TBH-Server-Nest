@@ -1,4 +1,5 @@
 import type {
+  IPaginationOptions,
   IProductPublicFilters,
   IProductWithRelations,
 } from 'tbh-shared-types';
@@ -8,44 +9,41 @@ export function filterProductResult(
   filters: IProductPublicFilters,
 ): IProductWithRelations[] {
   const { keyword, minPrice, maxPrice } = filters;
-  this.logger.debug(
-    `Filtering products with keyword: ${keyword}, minPrice: ${maxPrice}, maxPrice: ${maxPrice}`,
-  );
-  const result: IProductWithRelations[] = [];
+  let result = productList;
 
   if (keyword) {
     const keywordLower = keyword.toLowerCase();
+    const includes = (value?: string | null) =>
+      !!value && value.toLowerCase().includes(keywordLower);
 
-    const matchesKeyword = (product: IProductWithRelations) => {
-      return (
-        product.productName.toLowerCase().includes(keywordLower) ||
-        product.productDescription.short.toLowerCase().includes(keywordLower) ||
-        product.productDescription.content
-          .toLowerCase()
-          .includes(keywordLower) ||
-        product.productTags.some((tag) =>
-          tag.toLowerCase().includes(keywordLower),
-        )
-      );
-    };
-
-    result.push(...productList.filter((p) => matchesKeyword(p)));
-  }
-
-  if (minPrice || maxPrice) {
-    if (result.length) {
-      return result.filter(
-        (p) =>
-          parseFloat(p.productPrice) >= (minPrice || 0) &&
-          parseFloat(p.productPrice) <= (maxPrice || Infinity),
-      );
-    }
-    return productList.filter(
-      (p) =>
-        parseFloat(p.productPrice) >= (minPrice || 0) &&
-        parseFloat(p.productPrice) <= (maxPrice || Infinity),
+    result = result.filter(
+      (product) =>
+        includes(product.productName) ||
+        includes(product.productDescription?.short) ||
+        includes(product.productDescription?.content) ||
+        (product.productTags ?? []).some((tag) => includes(tag)),
     );
   }
 
+  if (minPrice || maxPrice) {
+    const min = Number(minPrice) || 0;
+    const max = Number(maxPrice) || Infinity;
+    result = result.filter((product) => {
+      const price = parseFloat(product.productPrice);
+      return price >= min && price <= max;
+    });
+  }
+
   return result;
+}
+
+/** Slices an already-filtered list with the same page/pageSize semantics as the DB helper. */
+export function paginateInMemory<T>(
+  list: T[],
+  options?: IPaginationOptions,
+): T[] {
+  if (!options) return list;
+  const pageSize = Number(options.pageSize ?? 20);
+  const offset = Math.max((Number(options.page) - 1) * pageSize, 0);
+  return list.slice(offset, offset + pageSize);
 }
