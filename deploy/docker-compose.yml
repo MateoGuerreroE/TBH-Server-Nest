@@ -1,0 +1,41 @@
+# Lives on the EC2 at ~/stack/. Run: docker compose pull && docker compose up -d
+services:
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"          # HTTP/3
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data       # certificates, keep this persistent
+      - caddy_config:/config
+    networks: [web]
+    depends_on: [tbh-server]
+
+  tbh-server:
+    image: ${ECR_REGISTRY}/tbh-server:${TBH_SERVER_TAG:-latest}
+    restart: unless-stopped
+    env_file: ./env/tbh-server.env
+    expose: ["5000"]           # reachable by Caddy only, not published
+    networks: [web]
+    logging: &logging
+      driver: json-file
+      options: { max-size: "10m", max-file: "3" }
+
+  # Template for the next service: copy, rename, add a block to the Caddyfile.
+  # other-server:
+  #   image: ${ECR_REGISTRY}/other-server:${OTHER_SERVER_TAG:-latest}
+  #   restart: unless-stopped
+  #   env_file: ./env/other-server.env
+  #   expose: ["3000"]
+  #   networks: [web]
+  #   logging: *logging
+
+networks:
+  web:
+
+volumes:
+  caddy_data:
+  caddy_config:

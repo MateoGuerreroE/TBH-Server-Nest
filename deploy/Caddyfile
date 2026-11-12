@@ -1,0 +1,9 @@
+# One block per service. Each domain's A record must point at the Elastic IP.
+api.example.com {
+	encode zstd gzip
+	reverse_proxy tbh-server:5000
+}
+
+# other.example.com {
+# 	reverse_proxy other-server:3000
+# }
