@@ -44,6 +44,21 @@ export class PaymentRepository {
     });
   }
 
+  async getPaymentByExternalId(
+    externalPaymentId: string,
+  ): Promise<IPaymentRecord | null> {
+    return this.client.query.paymentTable.findFirst({
+      where: (payment, { eq }) =>
+        eq(payment.externalPaymentId, externalPaymentId),
+    });
+  }
+
+  async getPaymentsByOrderId(orderId: string): Promise<IPaymentRecord[]> {
+    return this.client.query.paymentTable.findMany({
+      where: (payment, { eq }) => eq(payment.orderId, orderId),
+    });
+  }
+
   async createPayment(payment: ICreatePayment): Promise<IPaymentRecord> {
     const result = await this.client
       .insert(schema.paymentTable)

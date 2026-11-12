@@ -105,6 +105,20 @@ export class ProductRepository {
     });
   }
 
+  async getPurchasableProducts(
+    productIds: string[],
+  ): Promise<IProductRecord[]> {
+    if (!productIds.length) return [];
+    return this.client.query.productTable.findMany({
+      where: (product, { and, inArray, isNull, eq }) =>
+        and(
+          inArray(product.productId, productIds),
+          eq(product.isActive, true),
+          isNull(product.deletedAt),
+        ),
+    });
+  }
+
   async __createProducts(productData: ICreateProduct[]): Promise<number> {
     const insertedProducts = await this.client
       .insert(schema.productTable)

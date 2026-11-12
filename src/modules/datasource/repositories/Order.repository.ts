@@ -73,6 +73,22 @@ export class OrderRepository {
     return result[0];
   }
 
+  /**
+   * Inserts the order and its items in a single HTTP batch (one implicit
+   * transaction on neon-http), so an order never exists without its items.
+   */
+  async createOrderWithItems(
+    order: BaseCreateOrder & { orderId: string },
+    items: Omit<ICreateOrderItem, 'orderId'>[],
+  ): Promise<void> {
+    await this.client.batch([
+      this.client.insert(schema.orderTable).values(order),
+      this.client
+        .insert(schema.orderItemTable)
+        .values(items.map((item) => ({ ...item, orderId: order.orderId }))),
+    ]);
+  }
+
   async updateOrder(data: IUpdateOrder): Promise<IOrderRecord | null> {
     const { orderId, ...updateData } = data;
 
@@ -87,6 +103,13 @@ export class OrderRepository {
     }
 
     return result[0];
+  }
+
+  async setOrderStatus(orderId: string, status: string): Promise<void> {
+    await this.client
+      .update(schema.orderTable)
+      .set({ status })
+      .where(eq(schema.orderTable.orderId, orderId));
   }
 
   async createOrderItems(products: ICreateOrderItem[]): Promise<void> {

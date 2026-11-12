@@ -1,0 +1,2 @@
+ALTER TABLE "orders" ADD COLUMN "status" varchar(15) DEFAULT 'pending' NOT NULL;--> statement-breakpoint
+ALTER TABLE "payments" ADD CONSTRAINT "payments_externalPaymentId_unique" UNIQUE("externalPaymentId");;

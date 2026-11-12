@@ -1,4 +1,14 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Headers,
+  HttpCode,
+  Param,
+  Post,
+  Query,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { PaymentService } from '../services/Payment.service';
 import { LoggingService } from '../../logging/index';
 import {
@@ -50,5 +60,39 @@ export class PaymentController {
     } catch (error) {
       return handleControllerError(error, this.logger);
     }
+  }
+
+  /**
+   * Public on purpose (no @Auth): authenticity comes from the MP signature.
+   * Returns 5xx on processing errors so Mercado Pago retries.
+   */
+  @Post('webhook')
+  @HttpCode(200)
+  async webhook(
+    @Query('data.id') queryDataId: string | undefined,
+    @Body() body: { data?: { id?: string | number }; type?: string } | undefined,
+    @Headers('x-signature') signature: string | undefined,
+    @Headers('x-request-id') requestId: string | undefined,
+  ): Promise<{ received: true }> {
+    const dataId = queryDataId ?? body?.data?.id?.toString();
+    if (
+      !dataId ||
+      !this.paymentService.verifyWebhookSignature(signature, requestId, dataId)
+    ) {
+      throw new UnauthorizedException('Invalid webhook signature');
+    }
+
+    const topic = body?.type ?? 'payment';
+    if (topic !== 'payment') return { received: true };
+
+    try {
+      await this.paymentService.syncPaymentFromMp(dataId);
+    } catch (error) {
+      this.logger.error(
+        `Webhook sync failed for ${dataId}: ${(error as Error).message}`,
+      );
+      throw error;
+    }
+    return { received: true };
   }
 }

@@ -16,10 +16,12 @@ export class MercadoLibreService {
 
   async createPayment(
     paymentData: ExternalPaymentData,
+    idempotencyKey: string,
   ): Promise<ExternalPaymentResponse> {
     try {
       const paymentResult = await this.paymentClient.create({
         body: paymentData,
+        requestOptions: { idempotencyKey },
       });
 
       return paymentResult as ExternalPaymentResponse;
@@ -27,6 +29,19 @@ export class MercadoLibreService {
       throw new BusinessError(
         'Unable to process payment',
         `ML Payment creation failed: ${error.message}`,
+      );
+    }
+  }
+
+  /** Source of truth for webhooks: never trust the notification body. */
+  async getPayment(paymentId: string): Promise<ExternalPaymentResponse> {
+    try {
+      const result = await this.paymentClient.get({ id: paymentId });
+      return result as unknown as ExternalPaymentResponse;
+    } catch (error) {
+      throw new BusinessError(
+        'Unable to fetch payment',
+        `ML Payment lookup failed: ${error.message}`,
       );
     }
   }

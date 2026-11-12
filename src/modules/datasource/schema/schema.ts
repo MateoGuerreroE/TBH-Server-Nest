@@ -238,6 +238,8 @@ export const orderTable = pgTable('orders', {
   orderDate: timestamp({ mode: 'date' }).notNull().defaultNow(),
   orderProductTotal: numeric({ precision: 10, scale: 2 }).notNull(),
   taxes: numeric({ precision: 10, scale: 2 }).notNull(),
+  // pending | paid | failed | cancelled
+  status: varchar({ length: 15 }).notNull().default('pending'),
   addressId: uuid()
     .default(null)
     .references(() => addressTable.addressId, { onDelete: 'set null' }),
@@ -309,7 +311,7 @@ export const paymentTable = pgTable('payments', {
   paymentId: uuid().primaryKey().defaultRandom(),
   paymentDate: timestamp({ mode: 'date' }).defaultNow(),
   paymentAmount: numeric({ precision: 10, scale: 2 }).notNull(),
-  externalPaymentId: varchar({ length: 255 }).notNull(),
+  externalPaymentId: varchar({ length: 255 }).notNull().unique(),
   updatedAt: timestamp({ mode: 'date' }).notNull().defaultNow(),
   orderId: uuid('orderId').notNull(),
   status: varchar({ length: 15 }).notNull(),

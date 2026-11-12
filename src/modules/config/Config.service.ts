@@ -33,4 +33,22 @@ export class ConfigService {
     if (!accessKey) throw new DataError('No Mercado Libre access key found');
     return accessKey;
   }
+
+  /** Tax rate as a fraction (0.19 = 19%). Owned by the server. */
+  getTaxRate(): number {
+    const rate = parseFloat(this.get<string>('TAX_RATE') ?? '0.19');
+    if (Number.isNaN(rate) || rate < 0 || rate >= 1) {
+      throw new DataError('Invalid TAX_RATE');
+    }
+    return rate;
+  }
+
+  getMpWebhookSecret(): string | undefined {
+    return this.get<string>('MP_WEBHOOK_SECRET');
+  }
+
+  /** Public base URL of this API, used for the MP notification_url. */
+  getPublicApiUrl(): string | undefined {
+    return this.get<string>('API_PUBLIC_URL');
+  }
 }

@@ -56,6 +56,7 @@ export interface IOrderRecord {
   orderId: string;
   orderDate: Date;
   orderProductTotal: string;
+  status: string;
   addressId: string | null;
   taxes: string;
   paymentId: string | null;

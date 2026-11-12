@@ -1,5 +1,8 @@
 import {
   ArrayMinSize,
+  IsInt,
+  Max,
+  Min,
   IsArray,
   IsDateString,
   IsEmail,
@@ -15,8 +18,6 @@ import type { ExternalPaymentData, ExternalPaymentResponse } from './payment';
 import { Exclude, Type } from 'class-transformer';
 import type {
   ICreateCoupon,
-  ICreateOrder,
-  ICreateOrderItem,
   IUpdateOrder,
 } from 'tbh-shared-types';
 
@@ -75,57 +76,33 @@ export class ProcessPaymentDTO {
   addressId?: string;
 }
 
+export class OrderItemDTO {
+  @IsUUID()
+  productId: string;
+
+  @IsInt()
+  @Min(1)
+  @Max(999)
+  amount: number;
+}
+
+/**
+ * Prices, discounts and taxes are never accepted from the client: the server
+ * recomputes everything from the database (see OrderManagementService).
+ */
 export class CreateOrderDTO {
-  @IsUUID()
+  @IsString()
   @IsOptional()
-  userId?: string;
-
-  @IsUUID()
-  @IsOptional()
-  couponId?: string;
-
-  @IsNumber()
-  taxes: number;
-
-  @IsNumber()
-  orderProductTotal: number;
+  couponCode?: string;
 
   @IsArray()
   @ArrayMinSize(1)
   @ValidateNested({ each: true })
   @Type(() => OrderItemDTO)
   items: OrderItemDTO[];
-
-  getOrder(): Omit<ICreateOrder, 'items'> {
-    return {
-      orderProductTotal: this.orderProductTotal.toString(),
-      taxes: this.taxes.toString(),
-      userId: this.userId,
-      couponId: this.couponId,
-    };
-  }
 }
 
-export class OrderItemDTO {
-  @IsUUID()
-  productId: string;
-
-  @IsNumber()
-  amount: number;
-
-  @IsNumber()
-  priceAtPurchase: number;
-
-  @Exclude()
-  getOrderItem(): Omit<ICreateOrderItem, 'orderId'> {
-    return {
-      productId: this.productId,
-      amount: this.amount.toString(),
-      priceAtPurchase: this.priceAtPurchase.toString(),
-    };
-  }
-}
-
+/** Internal only: no route accepts this from a client any more. */
 export class UpdateOrderDTO {
   @IsUUID()
   orderId: string;
@@ -133,14 +110,6 @@ export class UpdateOrderDTO {
   @IsUUID()
   @IsOptional()
   addressId?: string;
-
-  @IsNumber()
-  @IsOptional()
-  orderProductTotal?: number;
-
-  @IsNumber()
-  @IsOptional()
-  taxes?: number;
 
   @IsUUID()
   @IsOptional()
@@ -150,18 +119,11 @@ export class UpdateOrderDTO {
   @IsOptional()
   paymentId?: string | null;
 
-  @IsUUID()
-  @IsOptional()
-  couponId?: string | null;
-
   @Exclude()
   getOrder(): IUpdateOrder {
     return {
-      orderProductTotal: this.orderProductTotal?.toString(),
-      userId: this.userId,
-      couponId: this.couponId,
-      taxes: this.taxes?.toString(),
       orderId: this.orderId,
+      userId: this.userId,
       addressId: this.addressId,
       paymentId: this.paymentId,
     };
